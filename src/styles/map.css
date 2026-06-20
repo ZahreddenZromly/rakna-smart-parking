@@ -1,0 +1,5 @@
+﻿// map
+export default function map() {
+  return <div>map</div>
+}
+
