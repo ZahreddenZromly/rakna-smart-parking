@@ -5,6 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import MobileLayout from '../components/common/MobileLayout'
 import AdsCarousel from '../components/home/AdsCarousel'
+import AIAssistant from '../components/ai/AIAssistant'
 import Icon from '../components/common/Icon'
 import { C, FONT, R, SHADOW, circleBtn } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
@@ -60,7 +61,7 @@ export default function MapPage() {
       <AdsCarousel />
 
       {/* Map */}
-      <div style={{ marginTop: 20, height: 280, borderRadius: R.card, overflow: 'hidden', boxShadow: SHADOW.card, position: 'relative' }}>
+      <div style={{ marginTop: 20, height: 280, borderRadius: R.card, overflow: 'hidden', boxShadow: SHADOW.card, position: 'relative', isolation: 'isolate' }}>
         <MapContainer center={TRIPOLI_CENTER} zoom={16} style={{ height: '100%', width: '100%' }} zoomControl={false}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -98,6 +99,9 @@ export default function MapPage() {
 
       {/* Selected lot card */}
       <SelectedCard lot={selected} onOpen={() => navigate('/parking/' + selected.id)} />
+
+      {/* AI assistant */}
+      <AIAssistant />
     </MobileLayout>
   )
 }
