@@ -1,34 +1,36 @@
 :root {
-  /* brand (same in both themes) */
-  --brand: #F9DD4E;
-  --brand-dark: #F2D02C;
-  --brand-soft: #FEF7D3;
-  /* stable ink surfaces */
-  --ink: #0F0E0E;
-  --on-ink: #FFFFFF;
+  /* PRIMARY — royal blue accent (readable with dark or white text) */
+  --brand: #4F7BF5;
+  --brand-dark: #2E54E8;
+  --brand-soft: #E2EAFE;
+  --accent: #34C7F4;          /* electric sky — glows & highlights */
+  /* deep midnight blue — the dominant branded surfaces (hero, nav, cards) */
+  --ink: #0B1A40;
+  --on-ink: #F4F8FF;
   /* LIGHT theme semantic */
-  --text: #0F0E0E;
-  --text-muted: #9A9A9A;
-  --text-soft: #6B6B6B;
+  --text: #0E1B36;
+  --text-muted: #8693AE;
+  --text-soft: #51607D;
   --surface: #FFFFFF;
-  --bg: #F5F5F5;
-  --border: #E8E8E8;
-  --frame: #E4E6EA;
+  --bg: #E6EDF8;              /* requested cool grey */
+  --border: #D9E2F2;
+  --frame: #D2DCEE;
 }
 
 [data-theme="dark"] {
-  --brand: #F9DD4E;
-  --brand-dark: #E9C828;
-  --brand-soft: #3A3320;
-  --ink: #1A1A1C;
-  --on-ink: #FFFFFF;
-  --text: #F2F2F2;
-  --text-muted: #8E8E93;
-  --text-soft: #B5B5BA;
-  --surface: #1E1E20;
-  --bg: #121213;
-  --border: #2C2C2E;
-  --frame: #0A0A0B;
+  --brand: #6E97FF;
+  --brand-dark: #4F7BF5;
+  --brand-soft: #1B274A;
+  --accent: #3FD0F7;
+  --ink: #0C1838;
+  --on-ink: #F4F8FF;
+  --text: #EAF0FB;
+  --text-muted: #8A93A8;
+  --text-soft: #AEB8CC;
+  --surface: #121C33;
+  --bg: #0A1124;
+  --border: #233152;
+  --frame: #060B18;
 }
 
 * { box-sizing: border-box; }
@@ -45,8 +47,17 @@ html, body {
 
 #root { min-height: 100vh; }
 
-button { font-family: 'Tajawal', system-ui, sans-serif; }
+button { font-family: 'Tajawal', system-ui, sans-serif; transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1); }
+button:active:not(:disabled) { transform: scale(0.97); }
+.leaflet-container button:active { transform: none; }
 input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
+
+/* selection + custom scrollbar in the new blue palette */
+::selection { background: var(--brand); color: #fff; }
+@media (prefers-reduced-motion: reduce) {
+  button { transition: none; }
+  button:active:not(:disabled) { transform: none; }
+}
 
 /* RTL helpers */
 [dir="rtl"] body { direction: rtl; }
@@ -60,8 +71,35 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-/* ---- Rukna the Pin mascot ---- */
-@keyframes mascotBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+/* ---- modern motion system (Expo-out easing, reduced-motion safe) ---- */
+@keyframes cardIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes floatBlob { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(14px, -12px) scale(1.12); } }
+@keyframes glowPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.85; } }
+@keyframes shimmer { from { background-position: -180% 0; } to { background-position: 180% 0; } }
+
+.anim-card { animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+/* staggered children — apply .stagger to a container */
+.stagger > * { animation: cardIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger > *:nth-child(2) { animation-delay: 0.09s; }
+.stagger > *:nth-child(3) { animation-delay: 0.14s; }
+.stagger > *:nth-child(4) { animation-delay: 0.19s; }
+.stagger > *:nth-child(5) { animation-delay: 0.24s; }
+.stagger > *:nth-child(6) { animation-delay: 0.29s; }
+.blob { animation: floatBlob 9s ease-in-out infinite; will-change: transform; }
+.blob-slow { animation: floatBlob 13s ease-in-out infinite reverse; will-change: transform; }
+/* press feedback for cards / tappable surfaces */
+.press { transition: transform 0.14s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease; }
+.press:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .anim-card, .stagger > *, .blob, .blob-slow { animation: none !important; }
+  .press { transition: none; }
+  .press:active { transform: none; }
+}
+
+/* ---- ركنوش (Raknoosh the Pin) mascot ---- */
+@keyframes mascotBob { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(-4px) rotate(-1.8deg); } 50% { transform: translateY(-6px) rotate(0deg); } 75% { transform: translateY(-4px) rotate(1.8deg); } }
+@keyframes mascotGlow { 0%, 100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.12); } }
 @keyframes mascotBlink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
 @keyframes mascotWave { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(20deg); } 50% { transform: rotate(-14deg); } 80% { transform: rotate(20deg); } }
 @keyframes mascotThink { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
@@ -81,8 +119,9 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 .mascot-spark { transform-box: fill-box; transform-origin: center; }
 .mascot-sad { animation: mascotSad 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-worried { animation: mascotWorried 0.7s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.mascot-glow { animation: mascotGlow 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @media (prefers-reduced-motion: reduce) {
-  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark, .mascot-sad, .mascot-worried, .mascot-tear, .mascot-sweat { animation: none !important; }
+  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark, .mascot-sad, .mascot-worried, .mascot-tear, .mascot-sweat, .mascot-glow { animation: none !important; }
 }
 
 /* Tappable Rukna — gives a little "press" feedback so users know it's interactive */

@@ -5,10 +5,15 @@
 // ============================================================
 
 export const C = {
-  // brand
+  // brand (kept the legacy `yellow*` keys so every import keeps working —
+  // the values are now the deep-blue brand tokens)
   yellow: 'var(--brand)',
   yellowDark: 'var(--brand-dark)',
   yellowSoft: 'var(--brand-soft)',
+  brand: 'var(--brand)',
+  brandDark: 'var(--brand-dark)',
+  brandSoft: 'var(--brand-soft)',
+  accent: 'var(--accent)',
   // semantic (adapt to theme)
   black: 'var(--text)',        // primary text / ink-on-surface
   text: 'var(--text)',
@@ -33,10 +38,11 @@ export const FONT = "'Tajawal', system-ui, sans-serif"
 export const R = { card: '26px', md: '18px', sm: '14px', pill: '999px' }
 
 export const SHADOW = {
-  card: '0 12px 30px rgba(15,14,14,0.10)',
-  soft: '0 6px 18px rgba(15,14,14,0.06)',
-  yellow: '0 10px 24px rgba(249,221,78,0.45)',
-  float: '0 16px 40px rgba(15,14,14,0.14)',
+  card: '0 14px 34px rgba(11,26,64,0.12)',
+  soft: '0 6px 18px rgba(11,26,64,0.07)',
+  yellow: '0 10px 26px rgba(79,123,245,0.42)',  // legacy key — now a blue glow
+  brand: '0 10px 26px rgba(79,123,245,0.42)',
+  float: '0 18px 44px rgba(11,26,64,0.18)',
 }
 
 export const pillBtn = (active) => ({

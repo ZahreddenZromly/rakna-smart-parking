@@ -1,4 +1,4 @@
-// "Rukna the Pin" — Rakna's friendly animated mascot (the map-pin brought to life).
+// "ركنوش" (Raknoosh the Pin) — Rakna's friendly animated mascot (the map-pin brought to life).
 // Pure SVG + CSS (see global.css mascot-* keyframes). Theme-aware, RTL-safe, tiny.
 //
 //   mood: 'idle'  -> gentle bob + blink
@@ -18,7 +18,7 @@ export default function Mascot({ size = 120, mood = 'idle', style }) {
   return (
     <svg
       width={size} height={size} viewBox="0 0 120 150"
-      style={style} role="img" aria-label="Rukna"
+      style={style} role="img" aria-label="ركنوش"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
@@ -29,7 +29,12 @@ export default function Mascot({ size = 120, mood = 'idle', style }) {
       </defs>
 
       {/* ground shadow */}
-      <ellipse cx="60" cy="140" rx="26" ry="6" fill="#0F0E0E" opacity="0.12" />
+      <ellipse cx="60" cy="140" rx="26" ry="6" fill="#0B1A40" opacity="0.14" />
+
+      {/* soft pulsing glow halo — gives Raknoosh a lively, alive feel */}
+      {!sad && !worried && (
+        <circle className="mascot-glow" cx="60" cy="54" r="46" fill="var(--accent)" opacity="0.4" />
+      )}
 
       {/* celebratory sparkles (happy mood) */}
       {happy && (

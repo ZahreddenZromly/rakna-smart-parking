@@ -58,8 +58,8 @@ export function suggestions(lang) {
 export function greeting(ctx, lang) {
   const ar = lang === 'ar'
   let text = ar
-    ? 'مرحباً! أنا ركنة، مساعدك الذكي. أقدر ألاقي لك موقف، أعرض نقاطك ومحفظتك، أحجز، أو أنقلك لأي صفحة في التطبيق.'
-    : "Hi! I'm Rukna, your smart assistant. I can find you parking, show your points or wallet, join a queue, or take you anywhere in the app."
+    ? 'مرحباً! أنا ركنوش، مساعدك الذكي. أقدر ألاقي لك موقف، أعرض نقاطك ومحفظتك، أحجز، أو أنقلك لأي صفحة في التطبيق.'
+    : "Hi! I'm Raknoosh, your smart assistant. I can find you parking, show your points or wallet, join a queue, or take you anywhere in the app."
   const actions = []
   const best = bestPick(ctx)
   if (best) {

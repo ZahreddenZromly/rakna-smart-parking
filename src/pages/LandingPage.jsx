@@ -14,8 +14,9 @@ export default function LandingPage() {
         position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column',
         boxShadow: '0 0 60px rgba(0,0,0,0.12)',
       }}>
-        <div style={{ position: 'absolute', top: -80, right: -60, width: 240, height: 240, borderRadius: '50%', background: C.yellow, opacity: 0.9 }} />
-        <div style={{ position: 'absolute', top: 90, left: -70, width: 160, height: 160, borderRadius: '50%', background: C.yellow, opacity: 0.15 }} />
+        <div className="blob" style={{ position: 'absolute', top: -80, right: -60, width: 240, height: 240, borderRadius: '50%', background: C.brand, opacity: 0.55, filter: 'blur(2px)' }} />
+        <div className="blob-slow" style={{ position: 'absolute', top: 90, left: -70, width: 180, height: 180, borderRadius: '50%', background: C.accent, opacity: 0.22, filter: 'blur(4px)' }} />
+        <div className="blob" style={{ position: 'absolute', bottom: 40, right: -40, width: 120, height: 120, borderRadius: '50%', background: C.accent, opacity: 0.16, filter: 'blur(6px)' }} />
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 32px', position: 'relative', zIndex: 2 }}>
           <div style={{ marginBottom: 8 }}><Mascot size={150} mood="wave" /></div>
