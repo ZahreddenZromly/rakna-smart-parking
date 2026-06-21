@@ -6,7 +6,7 @@ import Mascot from '../components/common/Mascot'
 
 export default function LandingPage() {
   const navigate = useNavigate()
-  const { t } = useSettings()
+  const { t, speak } = useSettings()
   return (
     <div style={{ minHeight: '100vh', background: C.frame, display: 'flex', justifyContent: 'center', fontFamily: FONT }}>
       <div style={{
@@ -19,6 +19,16 @@ export default function LandingPage() {
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 32px', position: 'relative', zIndex: 2 }}>
           <div style={{ marginBottom: 8 }}><Mascot size={150} mood="wave" /></div>
+          {/* Rukna says hi — tap to hear it */}
+          <button onClick={() => speak(t('rukna_intro'))} title={t('tap_me_hint')} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start', cursor: 'pointer',
+            background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)', color: C.onInk,
+            borderRadius: R.pill, padding: '8px 14px', marginBottom: 18, fontSize: '0.86rem', fontWeight: 600,
+            animation: 'popIn 0.4s ease',
+          }}>
+            <span aria-hidden style={{ width: 7, height: 7, borderRadius: '50%', background: C.yellow }} />
+            {t('rukna_intro')}
+          </button>
           <h1 style={{ color: C.onInk, fontSize: '2.6rem', fontWeight: 800, lineHeight: 1.15, margin: 0 }}>
             {t('splash_title_1')}<br />{t('splash_title_2')}<br /><span style={{ color: C.yellow }}>{t('splash_title_3')}</span>
           </h1>

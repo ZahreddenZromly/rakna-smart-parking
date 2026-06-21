@@ -21,6 +21,8 @@ import FacilityMapPage from './pages/FacilityMapPage'
 import WalletPage from './pages/WalletPage'
 import NewsPage from './pages/NewsPage'
 import OnboardingPage, { hasOnboarded } from './pages/OnboardingPage'
+import HelloToast from './components/common/HelloToast'
+import IdleHelper from './components/common/IdleHelper'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminUsers from './pages/admin/AdminUsers'
 import AdminContent from './pages/admin/AdminContent'
@@ -82,6 +84,8 @@ export default function App() {
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
             </Routes>
           </AccountGate>
+          <HelloToast />
+          <IdleHelper />
         </BrowserRouter>
       </AuthProvider>
     </SettingsProvider>

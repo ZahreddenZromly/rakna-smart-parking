@@ -7,12 +7,13 @@ import { useSettings } from '../context/SettingsContext'
 import { useAuth } from '../context/AuthContext'
 import { topUpWallet, getWalletTxns } from '../firebase/userService'
 import Icon from '../components/common/Icon'
+import MascotTip from '../components/common/MascotTip'
 
 const AMOUNTS = [10, 25, 50, 100]
 
 export default function WalletPage() {
   const navigate = useNavigate()
-  const { t } = useSettings()
+  const { t, speak } = useSettings()
   const { user, profile, refresh } = useAuth()
   const [txns, setTxns] = useState([])
   const [amount, setAmount] = useState(25)
@@ -39,6 +40,7 @@ export default function WalletPage() {
       await topUpWallet(user.uid, amount, method)
       await refresh(user.uid)
       await loadTxns()
+      speak(`${t('top_up')} ${amount} LYD`)
     } catch { /* ignore */ }
     setBusy(false)
   }
@@ -53,6 +55,9 @@ export default function WalletPage() {
         <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="wallet" size={16} color="rgba(255,255,255,0.6)" /> {t('wallet_balance')}</div>
         <div style={{ fontSize: '2.8rem', fontWeight: 800, color: C.yellow, lineHeight: 1.2 }}>{(profile?.walletBalance || 0).toFixed(0)} <span style={{ fontSize: '1.2rem', color: C.onInk }}>LYD</span></div>
       </div>
+
+      {/* Rukna tip */}
+      <MascotTip tips={['tip_wallet']} storageKey="rakna_tip_wallet" />
 
       {/* Top up */}
       <div style={{ background: C.white, borderRadius: R.card, padding: 18, marginTop: 16, boxShadow: SHADOW.soft }}>

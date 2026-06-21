@@ -3,6 +3,7 @@ import MobileLayout from '../components/common/MobileLayout'
 import { C, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import Icon from '../components/common/Icon'
+import MascotTip from '../components/common/MascotTip'
 
 const REWARDS = [
   { id: 1, title: '1 Hour Free', cost: 100, icon: 'logo' },
@@ -18,14 +19,15 @@ const HISTORY = [
 ]
 
 export default function LoyaltyPage() {
-  const { t } = useSettings()
+  const { t, speak } = useSettings()
   const [points, setPoints] = useState(230)
   const [toast, setToast] = useState(null)
 
   const redeem = (r) => {
     if (points < r.cost) return
     setPoints((p) => p - r.cost)
-    setToast('Redeemed: ' + r.title)
+    setToast(t('redeemed') + ': ' + r.title)
+    speak(`${t('redeemed')} ${r.title}`)
     setTimeout(() => setToast(null), 2500)
   }
   const pct = Math.min(100, Math.round((points / 500) * 100))
@@ -51,6 +53,9 @@ export default function LoyaltyPage() {
         </div>
         <div style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.5)', marginTop: 6 }}>{points}/500 {t('to_gold')}</div>
       </div>
+
+      {/* Rukna tip */}
+      <MascotTip tips={['tip_rewards']} storageKey="rakna_tip_rewards" />
 
       {/* Rewards grid */}
       <h3 style={{ fontSize: '1rem', fontWeight: 700, color: C.black, margin: '22px 0 12px' }}>{t('redeem')}</h3>

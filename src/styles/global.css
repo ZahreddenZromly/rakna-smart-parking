@@ -68,6 +68,9 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 @keyframes mascotPop { 0% { opacity: 0; transform: scale(0.6); } 60% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes mascotHappy { 0%, 100% { transform: translateY(0); } 30% { transform: translateY(-11px); } 50% { transform: translateY(0); } 70% { transform: translateY(-5px); } }
 @keyframes mascotTwinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 1; transform: scale(1); } }
+@keyframes mascotSad { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(3px) rotate(-2deg); } }
+@keyframes mascotWorried { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+@keyframes mascotTear { 0% { opacity: 0; transform: translateY(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(9px); } }
 
 .mascot-bob { animation: mascotBob 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-eye { animation: mascotBlink 4.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -76,6 +79,17 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 .mascot-pop { animation: mascotPop 0.4s ease both; }
 .mascot-happy { animation: mascotHappy 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-spark { transform-box: fill-box; transform-origin: center; }
+.mascot-sad { animation: mascotSad 3s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.mascot-worried { animation: mascotWorried 0.7s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 @media (prefers-reduced-motion: reduce) {
-  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark { animation: none !important; }
+  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark, .mascot-sad, .mascot-worried, .mascot-tear, .mascot-sweat { animation: none !important; }
+}
+
+/* Tappable Rukna — gives a little "press" feedback so users know it's interactive */
+.rukna-btn { background: none; border: none; padding: 0; cursor: pointer; line-height: 0; transition: transform 0.12s ease; }
+.rukna-btn:active { transform: scale(0.9); }
+.rukna-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 50%; }
+@media (prefers-reduced-motion: reduce) {
+  .rukna-btn { transition: none; }
+  .rukna-btn:active { transform: none; }
 }

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts'
 import { useNavigate } from 'react-router-dom'
 import { PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL } from '../../utils/constants'
+import { useSettings } from '../../context/SettingsContext'
+import MascotWelcome from '../../components/common/MascotWelcome'
 
 const hourlyData = [
   { hour: '6AM', occupancy: 20 }, { hour: '7AM', occupancy: 45 },
@@ -46,6 +48,7 @@ const TABS = ['Overview', 'Revenue', 'Lots']
 export default function OperatorDashboardPage() {
   const [tab, setTab] = useState('Overview')
   const navigate = useNavigate()
+  const { t: tr } = useSettings()
 
   const statCards = [
     { label: 'Total Spots', value: totalSpots, color: '#1a1a2e', icon: 'P' },
@@ -66,6 +69,8 @@ export default function OperatorDashboardPage() {
       </div>
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
+
+        <MascotWelcome text={tr('operator_welcome')} />
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
           {statCards.map((s) => (

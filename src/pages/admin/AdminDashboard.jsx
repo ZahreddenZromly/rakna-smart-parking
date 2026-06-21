@@ -5,6 +5,7 @@ import { C, R, SHADOW } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 import { getAllUsers, getAllReservations, isOnline } from '../../firebase/adminService'
 import Icon from '../../components/common/Icon'
+import MascotWelcome from '../../components/common/MascotWelcome'
 
 export default function AdminDashboard() {
   const { t } = useSettings()
@@ -42,6 +43,8 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: C.black, margin: '8px 0 18px' }}>{t('admin_dashboard')}</h1>
+
+      <MascotWelcome text={t('admin_welcome')} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14 }}>
         {cards.map((c) => (

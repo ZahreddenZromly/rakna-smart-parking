@@ -57,6 +57,17 @@ export default function AIAssistant() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, busy, open])
 
+  // Let other parts of the app (e.g. the idle helper) pop the assistant open
+  useEffect(() => {
+    const openIt = () => setOpen(true)
+    window.addEventListener('rakna:open-assistant', openIt)
+    if (sessionStorage.getItem('rakna_open_assistant') === '1') {
+      sessionStorage.removeItem('rakna_open_assistant')
+      setOpen(true) // eslint-disable-line react-hooks/set-state-in-effect -- one-shot open when arriving from the idle helper
+    }
+    return () => window.removeEventListener('rakna:open-assistant', openIt)
+  }, [])
+
   const send = async () => {
     const q = input.trim()
     if (!q || busy) return

@@ -1,9 +1,11 @@
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import MobileLayout from '../components/common/MobileLayout'
 import TopBar from '../components/common/TopBar'
 import { C, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import Icon from '../components/common/Icon'
+import Mascot from '../components/common/Mascot'
 import { PARKING_LOTS, getAvailabilityStatus } from '../utils/constants'
 
 const STATUS_BG = { available: C.available, limited: C.reserved, full: C.occupied }
@@ -12,8 +14,12 @@ const STATUS_KEY = { available: 'available', limited: 'filling_up', full: 'full'
 export default function ParkingDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t } = useSettings()
+  const { t, speak } = useSettings()
   const lot = PARKING_LOTS.find((l) => l.id === id)
+  const isFull = lot && getAvailabilityStatus(lot.availableSpots, lot.totalSpots) === 'full'
+
+  // Rukna feels for you when the lot is full
+  useEffect(() => { if (isFull) speak(t('lot_full_msg')) }, [isFull, speak, t])
 
   if (!lot) return (
     <MobileLayout bottomNav={false}>
@@ -51,6 +57,18 @@ export default function ParkingDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Sad Rukna when the lot is full */}
+      {isFull && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 12, marginTop: 16,
+          background: C.white, borderRadius: R.card, padding: '12px 14px',
+          boxShadow: SHADOW.soft, border: '1.5px solid ' + C.occupied + '55', animation: 'popIn 0.3s ease',
+        }}>
+          <div style={{ flexShrink: 0, width: 56 }}><Mascot size={56} mood="sad" /></div>
+          <div style={{ fontSize: '0.86rem', color: C.black, lineHeight: 1.45 }}>{t('lot_full_msg')}</div>
+        </div>
+      )}
 
       {/* Info grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>

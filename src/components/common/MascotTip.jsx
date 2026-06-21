@@ -6,9 +6,12 @@ import Mascot from './Mascot'
 // Rukna + a speech bubble that rotates through helpful tips. Dismissible (remembers per session).
 // tips: array of translation keys. rotateMs: how often to cycle.
 export default function MascotTip({ tips = ['tip_1', 'tip_2', 'tip_3', 'tip_4'], rotateMs = 6000, storageKey = 'rakna_tip_dismissed' }) {
-  const { t } = useSettings()
+  const { t, speak } = useSettings()
   const [i, setI] = useState(0)
   const [hidden, setHidden] = useState(() => sessionStorage.getItem(storageKey) === '1')
+
+  // Tap Rukna to hear the current tip read aloud and move to the next one
+  const tapRukna = () => { speak(t(tips[i])); setI((n) => (n + 1) % tips.length) }
 
   useEffect(() => {
     if (hidden || tips.length < 2) return
@@ -22,9 +25,9 @@ export default function MascotTip({ tips = ['tip_1', 'tip_2', 'tip_3', 'tip_4'],
 
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginTop: 16 }}>
-      <div style={{ flexShrink: 0, width: 56 }}>
+      <button className="rukna-btn" onClick={tapRukna} title={t('tap_me_hint')} aria-label={t('tap_me_hint')} style={{ flexShrink: 0, width: 56 }}>
         <Mascot size={56} mood="idle" />
-      </div>
+      </button>
       <div style={{
         position: 'relative', flex: 1, background: C.white, borderRadius: R.md,
         padding: '12px 36px 12px 14px', boxShadow: SHADOW.soft, animation: 'popIn 0.3s ease',
