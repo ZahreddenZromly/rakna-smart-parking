@@ -6,6 +6,7 @@ import { C, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import Icon from '../components/common/Icon'
 import Mascot from '../components/common/Mascot'
+import QueuePanel from '../components/queue/QueuePanel'
 import { PARKING_LOTS, getAvailabilityStatus } from '../utils/constants'
 
 const STATUS_BG = { available: C.available, limited: C.reserved, full: C.occupied }
@@ -69,6 +70,9 @@ export default function ParkingDetailPage() {
           <div style={{ fontSize: '0.86rem', color: C.black, lineHeight: 1.45 }}>{t('lot_full_msg')}</div>
         </div>
       )}
+
+      {/* Smart Queue — only when the lot is full */}
+      {isFull && <QueuePanel lot={lot} />}
 
       {/* Info grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>

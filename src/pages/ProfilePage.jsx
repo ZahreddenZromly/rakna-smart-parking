@@ -18,6 +18,7 @@ export default function ProfilePage() {
     { icon: 'wallet', label: t('wallet'), to: '/wallet' },
     { icon: 'star', label: t('rewards_points'), to: '/loyalty' },
     { icon: 'news', label: t('news'), to: '/news' },
+    { icon: 'building', label: t('partner_for_business'), to: '/partner' },
     { icon: 'settings', label: t('settings'), to: '/settings' },
   ]
 

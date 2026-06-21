@@ -28,6 +28,10 @@ import AdminUsers from './pages/admin/AdminUsers'
 import AdminContent from './pages/admin/AdminContent'
 import AdminParkings from './pages/admin/AdminParkings'
 import AdminAnalytics from './pages/admin/AdminAnalytics'
+import AdminQueue from './pages/admin/AdminQueue'
+import AdminPartners from './pages/admin/AdminPartners'
+import PartnerPage from './pages/PartnerPage'
+import QueueWatcher from './components/queue/QueueWatcher'
 import { C, FONT } from './styles/theme'
 
 function Entry() {
@@ -68,6 +72,7 @@ export default function App() {
               <Route path="/loyalty" element={<LoyaltyPage />} />
               <Route path="/wallet" element={<WalletPage />} />
               <Route path="/news" element={<NewsPage />} />
+              <Route path="/partner" element={<PartnerPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/phone-login" element={<PhoneLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -82,10 +87,13 @@ export default function App() {
               <Route path="/admin/content" element={<AdminContent />} />
               <Route path="/admin/parkings" element={<AdminParkings />} />
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
+              <Route path="/admin/queue" element={<AdminQueue />} />
+              <Route path="/admin/partners" element={<AdminPartners />} />
             </Routes>
           </AccountGate>
           <HelloToast />
           <IdleHelper />
+          <QueueWatcher />
         </BrowserRouter>
       </AuthProvider>
     </SettingsProvider>

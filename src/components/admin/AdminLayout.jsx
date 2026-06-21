@@ -10,6 +10,8 @@ const TABS = [
   { to: '/admin/users', key: 'a_users', icon: 'user' },
   { to: '/admin/content', key: 'a_content', icon: 'news' },
   { to: '/admin/parkings', key: 'a_parkings', icon: 'pin' },
+  { to: '/admin/queue', key: 'a_queue', icon: 'clock' },
+  { to: '/admin/partners', key: 'a_partners', icon: 'building' },
   { to: '/admin/analytics', key: 'a_analytics', icon: 'star' },
 ]
 
@@ -38,7 +40,7 @@ export default function AdminLayout({ children }) {
         <span style={{ fontWeight: 800, fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center', gap: 8 }}><Icon name="logo" size={22} color={C.yellow} /> {t('admin_panel')}</span>
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={() => navigate('/map')} style={{ background: 'rgba(255,255,255,0.12)', color: C.onInk, border: 'none', padding: '8px 14px', borderRadius: R.pill, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600 }}>{t('back_to_app')}</button>
-          <button onClick={async () => { try { await logoutUser() } catch {} navigate('/') }} style={{ background: C.yellow, color: C.ink, border: 'none', padding: '8px 14px', borderRadius: R.pill, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700 }}>{t('log_out')}</button>
+          <button onClick={async () => { try { await logoutUser() } catch { /* ignore */ } navigate('/') }} style={{ background: C.yellow, color: C.ink, border: 'none', padding: '8px 14px', borderRadius: R.pill, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 700 }}>{t('log_out')}</button>
         </div>
       </div>
 

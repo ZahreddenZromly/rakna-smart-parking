@@ -9,6 +9,11 @@ export const POINTS_TO_LYD = 0.1 // 100 points = 10 LYD discount
 export const PEAK_HOURS = [8, 9, 12, 13, 17, 18]
 export const PEAK_MULTIPLIER = 1.5
 
+// ---- Smart Queue & Reservation System (all configurable) ----
+export const QUEUE_OFFER_WINDOW_MS = 3 * 60 * 1000  // response deadline for an offer (spec: 2–5 min)
+export const QUEUE_HOLD_MS = 15 * 60 * 1000          // how long an accepted spot is held
+export const QUEUE_AVG_TURNOVER_MIN = 4              // per-position estimate for ETA
+
 // Coordinates are real points clustered around Martyrs' Square / central Tripoli.
 export const PARKING_LOTS = [
   {

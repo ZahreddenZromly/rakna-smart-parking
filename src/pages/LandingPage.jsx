@@ -52,6 +52,13 @@ export default function LandingPage() {
           }}>
             <Icon name="phone" size={18} /> {t('login_phone')}
           </button>
+          <button onClick={() => navigate('/partner')} style={{
+            width: '100%', marginTop: 14, background: 'none', border: 'none', cursor: 'pointer',
+            color: 'rgba(255,255,255,0.7)', fontWeight: 600, fontSize: '0.85rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          }}>
+            <Icon name="building" size={15} color="rgba(255,255,255,0.7)" /> {t('partner_cta')} →
+          </button>
         </div>
       </div>
     </div>
