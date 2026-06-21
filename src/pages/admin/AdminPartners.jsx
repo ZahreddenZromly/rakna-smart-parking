@@ -39,6 +39,18 @@ export default function AdminPartners() {
         ))}
       </div>
 
+      {/* Status legend — what each stage means */}
+      <div style={{ background: C.white, borderRadius: R.card, padding: '12px 16px', boxShadow: SHADOW.soft, marginTop: 14 }}>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: C.black, marginBottom: 8 }}>{t('status_legend')}</div>
+        {LEAD_STATUSES.map((s) => (
+          <div key={s} style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '4px 0' }}>
+            <span style={{ width: 9, height: 9, borderRadius: '50%', background: STATUS_COLOR[s], flexShrink: 0, alignSelf: 'center' }} />
+            <strong style={{ fontSize: '0.78rem', color: STATUS_COLOR[s], minWidth: 72 }}>{t('p_' + s)}</strong>
+            <span style={{ fontSize: '0.76rem', color: C.textMuted }}>{t('p_' + s + '_d')}</span>
+          </div>
+        ))}
+      </div>
+
       <h2 style={{ fontSize: '1.05rem', fontWeight: 700, color: C.black, margin: '26px 0 12px' }}>{t('partners_pipeline')}</h2>
 
       {sorted.length === 0 ? (
@@ -61,15 +73,16 @@ export default function AdminPartners() {
                   {l.email && <span>{l.email}</span>}
                   {l.phone && <span>{l.phone}</span>}
                 </div>
+                {l.planInterest && <div style={{ marginTop: 4 }}>{t('lead_plan')}: <strong style={{ color: C.black }}>{t('tier_' + l.planInterest)}</strong></div>}
                 {l.message && <div style={{ marginTop: 4, fontStyle: 'italic', color: C.textMuted }}>“{l.message}”</div>}
-                {l.estMonthly ? <div style={{ marginTop: 4, color: C.yellowDark, fontWeight: 700 }}>~{Number(l.estMonthly).toLocaleString()} LYD/mo</div> : null}
+                {l.estMonthly ? <div style={{ marginTop: 4, color: C.yellowDark, fontWeight: 700 }}>~{Number(l.estMonthly).toLocaleString()} LYD/mo {t('est_keep').toLowerCase()}</div> : null}
                 <div style={{ marginTop: 4, fontSize: '0.7rem', color: C.textMuted }}>{ts(l.createdAt)}</div>
               </div>
 
               {/* status pipeline buttons */}
               <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
                 {LEAD_STATUSES.map((s) => (
-                  <button key={s} onClick={() => setLeadStatus(l.id, s)} style={{
+                  <button key={s} onClick={() => setLeadStatus(l.id, s)} title={t('p_' + s + '_d')} style={{
                     padding: '5px 10px', borderRadius: R.pill, cursor: 'pointer', fontSize: '0.7rem', fontWeight: 700,
                     border: '1.5px solid ' + (l.status === s ? STATUS_COLOR[s] : C.greyMid),
                     background: l.status === s ? STATUS_COLOR[s] + '18' : C.white,

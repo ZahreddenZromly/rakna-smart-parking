@@ -18,14 +18,18 @@ export default async function handler(req, res) {
     const { messages = [], context = {}, lang = 'en' } = req.body || {}
 
     const lots = (context.lots || [])
-      .map((l) => `- ${l.name} (${l.address}): ${l.available}/${l.total} free, ${l.price} LYD/hr`)
+      .map((l) => `- ${l.name} (${l.address}): ${l.available}/${l.total} free, ${l.price} LYD/hr${l.full ? ' [FULL — queue available]' : ''}`)
       .join('\n')
     const zones = (context.zones || [])
       .map((z) => `- Zone ${z.prefix} (${z.label}): ${z.free}/${z.total} free`)
       .join('\n')
+    const u = context.user || {}
+    const userState = u.signedIn
+      ? `Signed-in user: ${u.points} loyalty points, ${u.walletBalance} LYD wallet, ${u.vehicles} saved vehicle(s), ${u.activeBookings} active booking(s).`
+      : 'The user is not signed in.'
 
-    const system = `You are "Rakna Assistant", the in-app helper for the Rakna smart-parking app for the Bourguiba parking area in central Tripoli, Libya.
-Reply in ${lang === 'ar' ? 'Arabic' : 'English'}. Be concise, friendly, and practical — 1–4 short sentences. Never invent lots, zones, or prices; use only the live data below. If asked something unrelated to parking, gently steer back.
+    const system = `You are "Rukna", the smart in-app assistant for the Rakna smart-parking app for central Tripoli, Libya.
+Reply in ${lang === 'ar' ? 'Arabic' : 'English'}. Be concise, friendly, and practical — 1–4 short sentences. Never invent lots, zones, prices, or the user's numbers; use only the live data below. If asked something unrelated to parking, gently steer back.
 
 LIVE PARKING DATA:
 Lots:
@@ -34,7 +38,15 @@ ${lots || '(none)'}
 Zones in the main lot (A=Taxi, B=Reservation, C=Regular, D=Bus, E=Disability):
 ${zones || '(none)'}
 
-When recommending, prefer zones/lots with more free spaces and lower price unless the user asks otherwise. You can suggest the user tap a zone to book, top up their wallet, or open the parking map.`
+USER:
+${userState}
+
+WHAT THE APP CAN DO (you can guide the user to these — the app shows tappable action buttons alongside your reply):
+- Find the cheapest or most-available lot and open it to book a spot
+- Smart queue: if a lot is FULL, the user joins a waiting queue and is offered a spot (first-come-first-served) when one frees up
+- Wallet (top up, pay), loyalty points (redeem for free hours), vehicles, bookings, news/offers, and "Rakna for Business" partner program
+
+When recommending, prefer lots with more free spaces and lower price unless asked otherwise. Reference the user's real points/wallet/bookings when relevant. Keep it actionable.`
 
     const client = new Anthropic({ apiKey })
     const msg = await client.messages.create({
