@@ -66,12 +66,16 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 @keyframes mascotWave { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(20deg); } 50% { transform: rotate(-14deg); } 80% { transform: rotate(20deg); } }
 @keyframes mascotThink { 0%, 100% { opacity: 0.25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
 @keyframes mascotPop { 0% { opacity: 0; transform: scale(0.6); } 60% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes mascotHappy { 0%, 100% { transform: translateY(0); } 30% { transform: translateY(-11px); } 50% { transform: translateY(0); } 70% { transform: translateY(-5px); } }
+@keyframes mascotTwinkle { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 1; transform: scale(1); } }
 
 .mascot-bob { animation: mascotBob 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-eye { animation: mascotBlink 4.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .mascot-hand { animation: mascotWave 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: right bottom; }
 .mascot-dot { transform-box: fill-box; transform-origin: center; }
 .mascot-pop { animation: mascotPop 0.4s ease both; }
+.mascot-happy { animation: mascotHappy 1s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+.mascot-spark { transform-box: fill-box; transform-origin: center; }
 @media (prefers-reduced-motion: reduce) {
-  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot { animation: none !important; }
+  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark { animation: none !important; }
 }

@@ -5,7 +5,8 @@
 //         'wave'  -> also waves its hand (greetings)
 //         'thinking' -> bob + blink + "thinking" dots (AI is answering)
 export default function Mascot({ size = 120, mood = 'idle', style }) {
-  const waving = mood === 'wave'
+  const happy = mood === 'happy'
+  const waving = mood === 'wave' || happy
   const thinking = mood === 'thinking'
 
   return (
@@ -24,8 +25,17 @@ export default function Mascot({ size = 120, mood = 'idle', style }) {
       {/* ground shadow */}
       <ellipse cx="60" cy="140" rx="26" ry="6" fill="#0F0E0E" opacity="0.12" />
 
+      {/* celebratory sparkles (happy mood) */}
+      {happy && (
+        <g fill="var(--brand-dark)">
+          <path className="mascot-spark" d="M16 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" style={{ animation: 'mascotTwinkle 1.3s ease-in-out 0s infinite' }} />
+          <path className="mascot-spark" d="M100 22 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6 Z" style={{ animation: 'mascotTwinkle 1.3s ease-in-out 0.4s infinite' }} />
+          <path className="mascot-spark" d="M104 58 l1.3 3.2 3.2 1.3 -3.2 1.3 -1.3 3.2 -1.3 -3.2 -3.2 -1.3 3.2 -1.3 Z" style={{ animation: 'mascotTwinkle 1.3s ease-in-out 0.8s infinite' }} />
+        </g>
+      )}
+
       {/* everything bobs together */}
-      <g className="mascot-bob">
+      <g className={happy ? 'mascot-happy' : 'mascot-bob'}>
         {/* waving hand (left side) */}
         <g className={waving ? 'mascot-hand' : ''}>
           <line x1="22" y1="74" x2="9" y2="64" stroke="var(--brand-dark)" strokeWidth="5" strokeLinecap="round" />

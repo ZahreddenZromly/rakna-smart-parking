@@ -7,6 +7,7 @@ import { PARKING_LOTS, POINTS_PER_HOUR } from '../utils/constants'
 import { ZONE_META } from '../utils/spotsData'
 import { QRCodeSVG } from 'qrcode.react'
 import Icon from '../components/common/Icon'
+import Mascot from '../components/common/Mascot'
 
 
 export default function ReservationPage() {
@@ -32,12 +33,10 @@ export default function ReservationPage() {
   return (
     <MobileLayout bottomNav={false} bg={C.grey}>
       {/* Success header */}
-      <div style={{ textAlign: 'center', paddingTop: 40 }}>
-        <div style={{
-          width: 86, height: 86, borderRadius: '50%', background: C.yellow, margin: '0 auto',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: SHADOW.yellow,
-        }}><Icon name="check" size={44} color={C.ink} strokeWidth={2.6} /></div>
-        <h2 style={{ margin: '18px 0 4px', fontSize: '1.4rem', fontWeight: 700, color: C.black }}>{t('booking_confirmed')}</h2>
+      <div style={{ textAlign: 'center', paddingTop: 28 }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}><Mascot size={120} mood="happy" /></div>
+        <h2 style={{ margin: '8px 0 4px', fontSize: '1.4rem', fontWeight: 700, color: C.black }}>{t('booking_confirmed')}</h2>
+        <p style={{ color: C.yellowDark, fontWeight: 600, fontSize: '0.85rem', margin: '0 0 6px' }}>{t('booking_thanks')}</p>
         <p style={{ color: C.textSoft, fontSize: '0.9rem', margin: 0 }}>
           {t('spot')} <strong>{spotId}</strong> · {lot.name} {t('spot_reserved')}
         </p>

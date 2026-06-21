@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import MobileLayout from '../components/common/MobileLayout'
 import AdsCarousel from '../components/home/AdsCarousel'
 import AIAssistant from '../components/ai/AIAssistant'
+import MascotTip from '../components/common/MascotTip'
 import Icon from '../components/common/Icon'
 import { C, FONT, R, SHADOW, circleBtn } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
@@ -56,6 +57,9 @@ export default function MapPage() {
           {t('find_space')}
         </h1>
       </div>
+
+      {/* Rukna tip */}
+      <MascotTip tips={['tip_1', 'tip_2', 'tip_3', 'tip_4', 'tip_5']} />
 
       {/* Promotions / ads carousel */}
       <AdsCarousel />
