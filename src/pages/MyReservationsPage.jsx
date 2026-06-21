@@ -6,6 +6,7 @@ import { useSettings } from '../context/SettingsContext'
 import { useAuth } from '../context/AuthContext'
 import { getUserReservations, cancelReservation } from '../firebase/reservationService'
 import Icon from '../components/common/Icon'
+import Mascot from '../components/common/Mascot'
 
 const BADGE = {
   active: { bg: C.yellowSoft, fg: '#9A7B00', key: 'active' },
@@ -104,7 +105,7 @@ function Mini({ label, value }) {
 function Empty({ navigate, t }) {
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', background: C.white, borderRadius: R.card }}>
-      <div style={{ display: 'flex', justifyContent: 'center' }}><Icon name="ticket" size={44} color={C.textMuted} /></div>
+      <div style={{ display: 'flex', justifyContent: 'center' }}><Mascot size={110} mood="idle" /></div>
       <p style={{ color: C.textMuted, marginTop: 10 }}>{t('no_bookings')}</p>
       <button onClick={() => navigate('/map')} style={{ background: C.yellow, border: 'none', padding: '12px 24px', borderRadius: R.pill, fontWeight: 700, cursor: 'pointer', color: C.ink }}>{t('find_parking')}</button>
     </div>

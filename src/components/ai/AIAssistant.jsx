@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { C, R, SHADOW, FONT } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 import Icon from '../common/Icon'
+import Mascot from '../common/Mascot'
 import { PARKING_LOTS } from '../../utils/constants'
 import { LOT_SPOTS, ZONE_META, ZONE_ORDER } from '../../utils/spotsData'
 
@@ -30,7 +31,7 @@ function ruleFallback(q, ctx, lang) {
       ? `أرخص خيار متاح هو ${c.name} بسعر ${c.price} دل/ساعة، وبه ${c.available} مكان متاح.`
       : `The cheapest available option is ${c.name} at ${c.price} LYD/hr with ${c.available} spots free.`
   }
-  if (/free|available|space|متاح|مكان|فاضي/.test(text)) {
+  if (/free|available|space|where|park|spot|nearest|متاح|مكان|فاضي|أين|اين|اركن|أركن|ركن/.test(text)) {
     const m = lots.slice().sort((a, b) => b.available - a.available)[0]
     return ar
       ? `أكثر موقف به أماكن الآن هو ${m.name} — ${m.available} من ${m.total} متاح.`
@@ -85,12 +86,12 @@ export default function AIAssistant() {
       {/* Floating button */}
       {!open && (
         <button onClick={() => setOpen(true)} aria-label={t('ai_assistant')} style={{
-          position: 'fixed', bottom: 92, insetInlineEnd: 'calc(50% - 215px + 18px)', zIndex: 1500,
-          width: 56, height: 56, borderRadius: '50%', border: 'none', cursor: 'pointer',
-          background: C.ink, color: C.onInk, boxShadow: SHADOW.float,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'fixed', bottom: 90, insetInlineEnd: 'calc(50% - 215px + 16px)', zIndex: 1500,
+          width: 62, height: 62, borderRadius: '50%', border: 'none', cursor: 'pointer',
+          background: C.ink, boxShadow: SHADOW.float,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'visible', padding: 0,
         }}>
-          <Icon name="sparkle" size={26} color={C.yellow} />
+          <Mascot size={52} mood="idle" />
         </button>
       )}
 
@@ -104,8 +105,8 @@ export default function AIAssistant() {
           }}>
             {/* header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 20px', borderBottom: '1px solid ' + C.greyMid }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', background: C.ink, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="sparkle" size={22} color={C.yellow} />
+              <div style={{ width: 46, height: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Mascot size={46} mood={busy ? 'thinking' : 'wave'} />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, color: C.black }}>{t('ai_assistant')}</div>

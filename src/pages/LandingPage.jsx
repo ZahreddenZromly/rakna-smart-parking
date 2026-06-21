@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { C, FONT, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import Icon from '../components/common/Icon'
+import Mascot from '../components/common/Mascot'
 
 export default function LandingPage() {
   const navigate = useNavigate()
@@ -17,7 +18,7 @@ export default function LandingPage() {
         <div style={{ position: 'absolute', top: 90, left: -70, width: 160, height: 160, borderRadius: '50%', background: C.yellow, opacity: 0.15 }} />
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 32px', position: 'relative', zIndex: 2 }}>
-          <div style={{ marginBottom: 16 }}><Icon name="logo" size={72} color={C.yellow} strokeWidth={1.8} /></div>
+          <div style={{ marginBottom: 8 }}><Mascot size={150} mood="wave" /></div>
           <h1 style={{ color: C.onInk, fontSize: '2.6rem', fontWeight: 800, lineHeight: 1.15, margin: 0 }}>
             {t('splash_title_1')}<br />{t('splash_title_2')}<br /><span style={{ color: C.yellow }}>{t('splash_title_3')}</span>
           </h1>
