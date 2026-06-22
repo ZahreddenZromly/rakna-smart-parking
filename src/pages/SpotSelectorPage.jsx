@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import MobileLayout from '../components/common/MobileLayout'
 import TopBar from '../components/common/TopBar'
-import CarLanes from '../components/parking/CarLanes'
+import GISSpotMap from '../components/parking/GISSpotMap'
 import ConfirmBookingSheet from '../components/parking/ConfirmBookingSheet'
 import Icon from '../components/common/Icon'
 import { C, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import { PARKING_LOTS, getLotShortName } from '../utils/constants'
-import { LOT_SPOTS, ZONE_META, ZONE_ORDER } from '../utils/spotsData'
+import { LOT_SPOTS, ZONE_META, ZONE_ORDER, getAllSpots } from '../utils/spotsData'
 
 export default function SpotSelectorPage() {
   const { id } = useParams()
@@ -37,6 +37,7 @@ export default function SpotSelectorPage() {
   const zones = ZONE_ORDER.filter((z) => layout.zones[z])
   const zoneSpots = layout.zones[activeZone].spots
   const available = zoneSpots.filter((s) => s.status === 'available').length
+  const allSpots = getAllSpots(id)
 
   const pickSpot = (spot) => { setSelectedSpot(spot); speak(`${t('selected')} ${spot.id}`) }
   const confirmBooking = (spot, info) => {
@@ -90,12 +91,17 @@ export default function SpotSelectorPage() {
           ))}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', margin: '12px 0 14px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', margin: '12px 0 10px' }}>
           <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: C.black }}>{t('choose_space_h')}</h3>
           <span style={{ fontSize: '0.82rem', color: C.available, fontWeight: 600 }}>{available} {t('available_count')}</span>
         </div>
 
-        <CarLanes spots={zoneSpots} selectedSpot={selectedSpot} onSelect={pickSpot} />
+        <GISSpotMap
+          allSpots={allSpots}
+          activeZone={activeZone}
+          selectedSpot={selectedSpot}
+          onSelect={pickSpot}
+        />
 
         {/* Continue button */}
         <button

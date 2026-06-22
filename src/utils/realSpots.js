@@ -1,5 +1,17 @@
 // AUTO-GENERATED from autocad borgheba.dxf — real spot coordinates (CAD units)
 export const SPOT_BBOX = { minX:2353.162, maxX:2519.681, minY:3649.896, maxY:3734.688 }
+
+// Linear transform calibrated from engineers' GeoJSON (main.parking_FeaturesToJSON2.geojson).
+// SW anchor: D-11 (CAD 2353.162,3649.896) → GPS (13.171542,32.894759)
+// NE anchor: C-20 (CAD 2519.681,3734.688) → GPS (13.173311,32.895533)
+const CAD_X0 = 2353.162, CAD_XW = 2519.681 - 2353.162
+const CAD_Y0 = 3649.896, CAD_YH = 3734.688 - 3649.896
+const GPS_LNG0 = 13.171542, GPS_LNG1 = 13.173311
+const GPS_LAT0 = 32.894759, GPS_LAT1 = 32.895533
+export const cadToGPS = (x, y) => ({
+  lng: GPS_LNG0 + (x - CAD_X0) / CAD_XW * (GPS_LNG1 - GPS_LNG0),
+  lat: GPS_LAT0 + (y - CAD_Y0) / CAD_YH * (GPS_LAT1 - GPS_LAT0),
+})
 export const REAL_SPOTS = [
   { id:"A-01", zone:"taxi", x:2401.484, y:3686.176 },
   { id:"A-02", zone:"taxi", x:2404.330, y:3685.224 },

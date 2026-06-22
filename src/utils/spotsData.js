@@ -5,7 +5,7 @@
 //   Zone E = Disability (not in CAD yet — synthetic until engineers add it)
 // status: 'available' | 'occupied' | 'reserved'
 // ============================================================
-import { REAL_SPOTS, SPOT_BBOX, GATES } from './realSpots'
+import { REAL_SPOTS, SPOT_BBOX, GATES, cadToGPS } from './realSpots'
 
 export { SPOT_BBOX, GATES }
 
@@ -48,13 +48,16 @@ const groupReal = () => {
   const out = {}
   const bias = { taxi: 0.4, reservation: 0.45, regular: 0.4, bus: 0.5 }
   Object.entries(byZone).forEach(([zone, arr]) => {
-    const spots = arr.map((s, i) => ({
-      id: s.id, zone, prefix: ZONE_META[zone].prefix,
-      number: parseInt(s.id.split('-')[1], 10),
-      col: i % 2, row: Math.floor(i / 2),
-      x: s.x, y: s.y, mapped: true,
-      status: rnd(bias[zone] ?? 0.4),
-    }))
+    const spots = arr.map((s, i) => {
+      const gps = cadToGPS(s.x, s.y)
+      return {
+        id: s.id, zone, prefix: ZONE_META[zone].prefix,
+        number: parseInt(s.id.split('-')[1], 10),
+        col: i % 2, row: Math.floor(i / 2),
+        x: s.x, y: s.y, lat: gps.lat, lng: gps.lng, mapped: true,
+        status: rnd(bias[zone] ?? 0.4),
+      }
+    })
     spots.slice(0, 3).forEach((s) => { s.status = 'available' })
     out[zone] = spots
   })
