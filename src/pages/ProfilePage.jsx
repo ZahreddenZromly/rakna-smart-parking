@@ -52,7 +52,7 @@ export default function ProfilePage() {
         }}>{user ? t('edit') : t('sign_in')}</button>
       </div>
 
-      <div style={{ background: C.white, borderRadius: R.card, marginTop: 18, padding: '6px 18px', boxShadow: SHADOW.soft }}>
+      <div className="stagger" style={{ background: C.white, borderRadius: R.card, marginTop: 18, padding: '6px 18px', boxShadow: SHADOW.soft }}>
         {ITEMS.map((it, i) => (
           <button key={it.label} onClick={() => navigate(it.to)} style={{
             width: '100%', background: 'none', border: 'none', cursor: 'pointer',

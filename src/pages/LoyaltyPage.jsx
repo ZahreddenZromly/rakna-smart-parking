@@ -43,7 +43,7 @@ export default function LoyaltyPage() {
       <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: C.black, margin: '24px 0 18px' }}>{t('rewards')}</h1>
 
       {/* Points card */}
-      <div style={{ background: C.ink, borderRadius: R.card, padding: 24, color: C.onInk, boxShadow: SHADOW.card, position: 'relative', overflow: 'hidden' }}>
+      <div className="anim-card" style={{ background: C.ink, borderRadius: R.card, padding: 24, color: C.onInk, boxShadow: SHADOW.card, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -40, right: -30, width: 140, height: 140, borderRadius: '50%', background: C.yellow, opacity: 0.15 }} />
         <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="star" size={16} color="rgba(255,255,255,0.6)" /> {t('your_points')}</div>
         <div style={{ fontSize: '3rem', fontWeight: 800, color: C.yellow, lineHeight: 1.1 }}>{points}</div>
@@ -59,7 +59,7 @@ export default function LoyaltyPage() {
 
       {/* Rewards grid */}
       <h3 style={{ fontSize: '1rem', fontWeight: 700, color: C.black, margin: '22px 0 12px' }}>{t('redeem')}</h3>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+      <div className="stagger" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
         {REWARDS.map((r) => {
           const ok = points >= r.cost
           return (

@@ -48,7 +48,7 @@ export default function AdminDashboard() {
 
       <MascotWelcome text={t('admin_welcome')} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14 }}>
+      <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 14 }}>
         {cards.map((c) => (
           <div key={c.label} onClick={() => navigate(c.to)} style={{
             background: C.white, borderRadius: R.card, padding: 18, boxShadow: SHADOW.soft,

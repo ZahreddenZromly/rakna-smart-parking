@@ -50,7 +50,7 @@ export default function WalletPage() {
       <TopBar title={t('wallet')} />
 
       {/* Balance card */}
-      <div style={{ background: C.ink, borderRadius: R.card, padding: 24, color: C.onInk, boxShadow: SHADOW.card, position: 'relative', overflow: 'hidden' }}>
+      <div className="anim-card" style={{ background: C.ink, borderRadius: R.card, padding: 24, color: C.onInk, boxShadow: SHADOW.card, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -40, right: -30, width: 140, height: 140, borderRadius: '50%', background: C.yellow, opacity: 0.15 }} />
         <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', display: 'flex', alignItems: 'center', gap: 6 }}><Icon name="wallet" size={16} color="rgba(255,255,255,0.6)" /> {t('wallet_balance')}</div>
         <div style={{ fontSize: '2.8rem', fontWeight: 800, color: C.yellow, lineHeight: 1.2 }}>{(profile?.walletBalance || 0).toFixed(0)} <span style={{ fontSize: '1.2rem', color: C.onInk }}>LYD</span></div>

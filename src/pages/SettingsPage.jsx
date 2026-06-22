@@ -7,7 +7,7 @@ import Icon from '../components/common/Icon'
 
 export default function SettingsPage() {
   const navigate = useNavigate()
-  const { theme, setTheme, lang, setLang, fontScale, setFontScale, voice, setVoice, speak, t } = useSettings()
+  const { theme, setTheme, lang, setLang, fontScale, setFontScale, voice, setVoice, speak, t, langVoices, voiceURI, setVoiceURI, previewVoice } = useSettings()
 
   return (
     <MobileLayout bottomNav={false} bg={C.grey}>
@@ -67,6 +67,33 @@ export default function SettingsPage() {
             }}
           />
         </div>
+
+        {/* Voice picker — choose a clearer Arabic voice + test it */}
+        {voice && (
+          <div style={{ padding: '0 10px 12px' }}>
+            <div style={{ fontSize: '0.78rem', fontWeight: 600, color: C.black, marginBottom: 8, paddingInlineStart: 2 }}>{t('voice_pick')}</div>
+            {langVoices.length === 0 ? (
+              <div style={{ fontSize: '0.78rem', color: C.textSoft, lineHeight: 1.55, background: C.grey, borderRadius: R.md, padding: '11px 13px' }}>{t('voice_none')}</div>
+            ) : (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <select value={voiceURI} onChange={(e) => setVoiceURI(e.target.value)} style={{
+                  flex: 1, minWidth: 0, padding: '11px 12px', borderRadius: R.md, border: '1.5px solid ' + C.greyMid,
+                  background: C.white, color: C.text, fontSize: '0.85rem', fontFamily: 'inherit', cursor: 'pointer',
+                }}>
+                  <option value="">{t('voice_auto')}</option>
+                  {langVoices.map((v) => <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>)}
+                </select>
+                <button onClick={() => previewVoice(voiceURI)} style={{
+                  flexShrink: 0, padding: '11px 15px', borderRadius: R.pill, border: 'none', cursor: 'pointer',
+                  background: C.yellow, color: C.ink, fontWeight: 700, fontSize: '0.82rem',
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                }}>
+                  <Icon name="voice" size={15} color={C.ink} /> {t('voice_test')}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </Section>
 
       <button onClick={() => navigate('/onboarding')} style={{
