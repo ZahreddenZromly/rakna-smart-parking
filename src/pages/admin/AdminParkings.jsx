@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import AdminLayout from '../../components/admin/AdminLayout'
 import { C, R, SHADOW } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
-import { PARKING_LOTS } from '../../utils/constants'
+import { PARKING_LOTS, getLotName, getLotAddress } from '../../utils/constants'
 import { getLotOverrides, saveLot } from '../../firebase/adminService'
 
 export default function AdminParkings() {
-  const { t } = useSettings()
+  const { t, lang } = useSettings()
   const [lots, setLots] = useState(PARKING_LOTS.map((l) => ({ ...l })))
   const [savingId, setSavingId] = useState(null)
   const [savedId, setSavedId] = useState(null)
@@ -46,8 +46,8 @@ export default function AdminParkings() {
           const pct = Math.round(((lot.totalSpots - lot.availableSpots) / lot.totalSpots) * 100)
           return (
             <div key={lot.id} style={{ background: C.white, borderRadius: R.card, padding: 18, boxShadow: SHADOW.soft }}>
-              <div style={{ fontWeight: 700, color: C.black }}>{lot.name}</div>
-              <div style={{ color: C.textMuted, fontSize: '0.78rem', marginBottom: 12 }}>📍 {lot.address}</div>
+              <div style={{ fontWeight: 700, color: C.black }}>{getLotName(lot, lang)}</div>
+              <div style={{ color: C.textMuted, fontSize: '0.78rem', marginBottom: 12 }}>📍 {getLotAddress(lot, lang)}</div>
 
               <div style={{ background: C.grey, borderRadius: R.sm, height: 8, marginBottom: 14 }}>
                 <div style={{ width: pct + '%', height: '100%', borderRadius: R.sm, background: pct > 80 ? C.danger : pct > 50 ? C.reserved : C.available }} />

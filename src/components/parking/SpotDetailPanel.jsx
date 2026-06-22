@@ -1,4 +1,6 @@
 import { ZONE_META } from '../../utils/spotsData'
+import { getLotName } from '../../utils/constants'
+import { useSettings } from '../../context/SettingsContext'
 import RouteToSpot from './RouteToSpot'
 
 // Turn-by-turn style hint to reach the spot inside the lot
@@ -23,6 +25,7 @@ const buildDirections = (spot) => {
 }
 
 export default function SpotDetailPanel({ spot, lot, onClose, onReserve }) {
+  const { lang } = useSettings()
   if (!spot) return null
 
   const zone = ZONE_META[spot.zone]
@@ -64,7 +67,7 @@ export default function SpotDetailPanel({ spot, lot, onClose, onReserve }) {
               </span>
             </div>
             <div style={{ color: '#636e72', fontSize: '0.88rem', marginTop: '2px' }}>
-              {zone.label} Zone · {lot.name}
+              {zone.label} Zone · {getLotName(lot, lang)}
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { useSettings } from '../context/SettingsContext'
 import { PARKING_LOTS, POINTS_PER_HOUR } from '../utils/constants'
 import { ZONE_META } from '../utils/spotsData'
 import { fmtHour, calcSplit, RAKNA_SHARE } from '../utils/pricing'
+import { getLotName } from '../utils/constants'
 import { QRCodeSVG } from 'qrcode.react'
 import Icon from '../components/common/Icon'
 import Mascot from '../components/common/Mascot'
@@ -19,7 +20,7 @@ function useBookingId() {
 export default function ReservationPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t, speak } = useSettings()
+  const { t, speak, lang } = useSettings()
   const [params] = useSearchParams()
   const lot = PARKING_LOTS.find((l) => l.id === id)
   const spotId  = params.get('spot')     || 'A1'
@@ -56,7 +57,7 @@ export default function ReservationPage() {
         <h2 style={{ margin: '8px 0 4px', fontSize: '1.4rem', fontWeight: 700, color: C.black }}>{t('booking_confirmed')}</h2>
         <p style={{ color: C.yellowDark, fontWeight: 600, fontSize: '0.85rem', margin: '0 0 6px' }}>{t('booking_thanks')}</p>
         <p style={{ color: C.textSoft, fontSize: '0.9rem', margin: 0 }}>
-          {t('spot')} <strong>{spotId}</strong> · {lot.name}
+          {t('spot')} <strong>{spotId}</strong> · {getLotName(lot, lang)}
         </p>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 12, background: C.yellowSoft, color: C.text, fontWeight: 700, fontSize: '0.82rem', padding: '7px 16px', borderRadius: R.pill }}>
           <Icon name="star" size={15} color={C.text} /> +{points} {t('points_earned')}

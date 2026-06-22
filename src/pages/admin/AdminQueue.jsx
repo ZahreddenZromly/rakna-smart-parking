@@ -3,7 +3,7 @@ import AdminLayout from '../../components/admin/AdminLayout'
 import { C, R, SHADOW } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 import Icon from '../../components/common/Icon'
-import { PARKING_LOTS } from '../../utils/constants'
+import { PARKING_LOTS, getLotName } from '../../utils/constants'
 import {
   subscribeAllQueue, releaseSpot, declineOffer, removeEntry, reconcileQueue, isActive,
 } from '../../firebase/queueService'
@@ -12,11 +12,11 @@ const STATUS_COLORS = {
   waiting: '#0984E3', offered: '#F2C200', accepted: '#26DE81',
   declined: '#636e72', expired: '#d63031', cancelled: '#b2bec3',
 }
-const lotName = (id) => PARKING_LOTS.find((l) => l.id === id)?.name || id
+const lotById = (id) => PARKING_LOTS.find((l) => l.id === id)
 const ts = (v) => (v?.seconds ? new Date(v.seconds * 1000).toLocaleTimeString() : '—')
 
 export default function AdminQueue() {
-  const { t } = useSettings()
+  const { t, lang } = useSettings()
   const [entries, setEntries] = useState([])
 
   useEffect(() => subscribeAllQueue(setEntries), [])
@@ -77,7 +77,7 @@ export default function AdminQueue() {
           return (
             <div key={lot.id} style={{ background: C.white, borderRadius: R.card, padding: 16, boxShadow: SHADOW.soft }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <strong style={{ color: C.black, fontSize: '0.92rem' }}>{lot.name}</strong>
+                <strong style={{ color: C.black, fontSize: '0.92rem' }}>{getLotName(lot, lang)}</strong>
                 <button onClick={() => releaseSpot(lot.id)} style={{
                   background: C.yellow, color: C.ink, border: 'none', borderRadius: R.pill,
                   padding: '6px 12px', cursor: 'pointer', fontSize: '0.74rem', fontWeight: 700,
@@ -118,7 +118,7 @@ export default function AdminQueue() {
             ) : logs.map((e) => (
               <tr key={e.id} style={{ borderTop: '1px solid ' + C.grey }}>
                 <td style={{ padding: '9px 8px', color: C.black, fontWeight: 600 }}>{e.userName || '—'}</td>
-                <td style={{ padding: '9px 8px', color: C.textSoft }}>{lotName(e.lotId)}</td>
+                <td style={{ padding: '9px 8px', color: C.textSoft }}>{getLotName(lotById(e.lotId) || { name: e.lotId }, lang)}</td>
                 <td style={{ padding: '9px 8px' }}><Chip status={e.status} label={t('q_' + e.status)} /></td>
                 <td style={{ padding: '9px 8px', color: C.textMuted }}>{ts(e.joinedAt)}</td>
                 <td style={{ padding: '9px 8px', color: C.textMuted }}>{ts(e.updatedAt)}</td>

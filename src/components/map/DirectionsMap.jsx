@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useSettings } from '../../context/SettingsContext'
+import { getLotName, getLotAddress } from '../../utils/constants'
 
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -35,6 +37,7 @@ function FitBounds({ positions }) {
 }
 
 export default function DirectionsMap({ lot }) {
+  const { lang } = useSettings()
   const [userPos, setUserPos] = useState(null)
   const [locError, setLocError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -117,8 +120,8 @@ export default function DirectionsMap({ lot }) {
           {/* Parking lot marker */}
           <Marker position={lotPos} icon={lotIcon}>
             <Popup>
-              <strong>{lot.name}</strong><br />
-              {lot.address}
+              <strong>{getLotName(lot, lang)}</strong><br />
+              {getLotAddress(lot, lang)}
             </Popup>
           </Marker>
 

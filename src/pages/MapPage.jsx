@@ -10,7 +10,7 @@ import MascotTip from '../components/common/MascotTip'
 import Icon from '../components/common/Icon'
 import { C, R, SHADOW, circleBtn } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
-import { TRIPOLI_CENTER, PARKING_LOTS, getAvailabilityStatus } from '../utils/constants'
+import { TRIPOLI_CENTER, PARKING_LOTS, getAvailabilityStatus, getLotName, getLotAddress, getLotShortName } from '../utils/constants'
 
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -78,7 +78,7 @@ export default function MapPage() {
             return (
               <Marker key={lot.id} position={[lot.lat, lot.lng]} icon={pin(st === 'full')}
                 eventHandlers={{ click: () => setSelected(lot) }}>
-                <Popup>{lot.name}</Popup>
+                <Popup>{getLotName(lot, lang)}</Popup>
               </Marker>
             )
           })}
@@ -95,7 +95,7 @@ export default function MapPage() {
               background: active ? C.black : C.white, color: active ? C.white : C.black,
               fontWeight: 600, fontSize: '0.82rem', whiteSpace: 'nowrap', boxShadow: SHADOW.soft,
             }}>
-              {lot.name.replace(' Parking', '').replace(' Lot', '')}
+              {getLotShortName(lot, lang)}
             </button>
           )
         })}
@@ -111,7 +111,7 @@ export default function MapPage() {
 }
 
 function SelectedCard({ lot, onOpen }) {
-  const { t } = useSettings()
+  const { t, lang } = useSettings()
   const st = getAvailabilityStatus(lot.availableSpots, lot.totalSpots)
   return (
     <div onClick={onOpen} style={{
@@ -121,8 +121,8 @@ function SelectedCard({ lot, onOpen }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
         <div style={{ width: 56, height: 56, borderRadius: R.md, background: C.yellowSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="building" size={28} color={C.ink} /></div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 700, color: C.black, fontSize: '1rem' }}>{lot.name}</div>
-          <div style={{ color: C.textMuted, fontSize: '0.8rem' }}>{lot.address}</div>
+          <div style={{ fontWeight: 700, color: C.black, fontSize: '1rem' }}>{getLotName(lot, lang)}</div>
+          <div style={{ color: C.textMuted, fontSize: '0.8rem' }}>{getLotAddress(lot, lang)}</div>
         </div>
         <span style={{ background: STATUS_BG[st] + '22', color: STATUS_BG[st], fontWeight: 700, fontSize: '0.7rem', padding: '5px 10px', borderRadius: R.pill }}>
           {t(STATUS_KEY[st])}

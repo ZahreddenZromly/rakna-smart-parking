@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts'
 import { useNavigate } from 'react-router-dom'
-import { PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL } from '../../utils/constants'
+import { PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL, getLotName, getLotAddress, getLotShortName } from '../../utils/constants'
 import { useSettings } from '../../context/SettingsContext'
 import MascotWelcome from '../../components/common/MascotWelcome'
 
@@ -31,8 +31,8 @@ const monthlyRevenue = [
   { month: 'May', revenue: 5200 }, { month: 'Jun', revenue: 5800 },
 ]
 
-const lotRevenue = PARKING_LOTS.map((lot) => ({
-  name: lot.name.split(' ').slice(0, 2).join(' '),
+const makeLotRevenue = (lang) => PARKING_LOTS.map((lot) => ({
+  name: getLotShortName(lot, lang),
   revenue: Math.round((lot.totalSpots - lot.availableSpots) * lot.pricePerHour * 6),
 }))
 
@@ -48,7 +48,8 @@ const TABS = ['Overview', 'Revenue', 'Lots']
 export default function OperatorDashboardPage() {
   const [tab, setTab] = useState('Overview')
   const navigate = useNavigate()
-  const { t: tr } = useSettings()
+  const { t: tr, lang } = useSettings()
+  const lotRevenue = makeLotRevenue(lang)
 
   const statCards = [
     { label: 'Total Spots', value: totalSpots, color: '#1a1a2e', icon: 'P' },
@@ -138,7 +139,7 @@ export default function OperatorDashboardPage() {
                     const pct = Math.round(((lot.totalSpots - lot.availableSpots) / lot.totalSpots) * 100)
                     return (
                       <tr key={lot.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                        <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a2e' }}>{lot.name}</td>
+                        <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a2e' }}>{getLotName(lot, lang)}</td>
                         <td style={{ padding: '12px', color: '#00b894', fontWeight: 600 }}>{lot.availableSpots}</td>
                         <td style={{ padding: '12px', color: '#636e72' }}>{lot.totalSpots}</td>
                         <td style={{ padding: '12px' }}>
@@ -229,8 +230,8 @@ export default function OperatorDashboardPage() {
                   const color = STATUS_COLOR[status]
                   return (
                     <tr key={lot.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a2e' }}>{lot.name}</td>
-                      <td style={{ padding: '12px', color: '#636e72' }}>{lot.address}</td>
+                      <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a2e' }}>{getLotName(lot, lang)}</td>
+                      <td style={{ padding: '12px', color: '#636e72' }}>{getLotAddress(lot, lang)}</td>
                       <td style={{ padding: '12px', color: '#00b894', fontWeight: 600 }}>{lot.availableSpots}</td>
                       <td style={{ padding: '12px', color: '#636e72' }}>{lot.totalSpots}</td>
                       <td style={{ padding: '12px', color: '#636e72' }}>{lot.pricePerHour} LYD</td>

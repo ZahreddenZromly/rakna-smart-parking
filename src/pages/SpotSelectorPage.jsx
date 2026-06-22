@@ -7,13 +7,13 @@ import ConfirmBookingSheet from '../components/parking/ConfirmBookingSheet'
 import Icon from '../components/common/Icon'
 import { C, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
-import { PARKING_LOTS } from '../utils/constants'
+import { PARKING_LOTS, getLotShortName } from '../utils/constants'
 import { LOT_SPOTS, ZONE_META, ZONE_ORDER } from '../utils/spotsData'
 
 export default function SpotSelectorPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t, speak } = useSettings()
+  const { t, speak, lang } = useSettings()
   const [params] = useSearchParams()
   const lot = PARKING_LOTS.find((l) => l.id === id)
   const layout = LOT_SPOTS[id]
@@ -53,7 +53,7 @@ export default function SpotSelectorPage() {
   return (
     <MobileLayout bottomNav={false} bg={C.white} pad={false}>
       <div style={{ padding: '0 20px' }}>
-        <TopBar title={lot.name.replace(' Parking', '').replace(' Lot', '')} />
+        <TopBar title={getLotShortName(lot, lang)} />
       </div>
 
       {/* Zone tabs */}

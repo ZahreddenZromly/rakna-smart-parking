@@ -7,11 +7,12 @@ import { ZONE_META } from '../../utils/spotsData'
 import { createReservation } from '../../firebase/reservationService'
 import { payFromWallet, addPoints } from '../../firebase/userService'
 import { HOUR_OPTIONS, fmtHour, buildBookingPricing, FULL_DAY_HOURS } from '../../utils/pricing'
+import { getLotName } from '../../utils/constants'
 import RouteToSpot from './RouteToSpot'
 import Icon from '../common/Icon'
 
 export default function ConfirmBookingSheet({ spot, lot, onClose, onConfirm }) {
-  const { t, voice } = useSettings()
+  const { t, voice, lang } = useSettings()
   const { user, profile, refresh } = useAuth()
   const navigate = useNavigate()
   const [showRoute, setShowRoute] = useState(true)
@@ -83,7 +84,7 @@ export default function ConfirmBookingSheet({ spot, lot, onClose, onConfirm }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: C.black }}>{t('confirm_booking')}</h3>
-            <div style={{ color: C.textMuted, fontSize: '0.85rem', marginTop: 2 }}>{lot.name}</div>
+            <div style={{ color: C.textMuted, fontSize: '0.85rem', marginTop: 2 }}>{getLotName(lot, lang)}</div>
           </div>
           <button onClick={onClose} style={{ width: 36, height: 36, borderRadius: '50%', border: 'none', background: C.grey, cursor: 'pointer', fontSize: '1rem', color: C.textSoft }}>✕</button>
         </div>

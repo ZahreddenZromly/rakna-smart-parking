@@ -2,7 +2,8 @@
 import { useNavigate } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { TRIPOLI_CENTER, PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL } from '../../utils/constants'
+import { TRIPOLI_CENTER, PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL, getLotName, getLotAddress } from '../../utils/constants'
+import { useSettings } from '../../context/SettingsContext'
 
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -26,6 +27,7 @@ const makeIcon = (color) =>
 
 export default function ParkingMap({ onSelectLot }) {
   const navigate = useNavigate()
+  const { lang } = useSettings()
   return (
     <MapContainer
       center={TRIPOLI_CENTER}
@@ -43,11 +45,11 @@ export default function ParkingMap({ onSelectLot }) {
           <Marker key={lot.id} position={[lot.lat, lot.lng]} icon={makeIcon(color)}>
             <Popup>
               <div style={{ minWidth: '180px' }}>
-                <strong style={{ fontSize: '1rem' }}>{lot.name}</strong>
+                <strong style={{ fontSize: '1rem' }}>{getLotName(lot, lang)}</strong>
                 <p style={{ margin: '6px 0', color }}>
                   ● {STATUS_LABEL[status]} — {lot.availableSpots} spots free
                 </p>
-                <p style={{ margin: '4px 0', color: '#636e72' }}>{lot.address}</p>
+                <p style={{ margin: '4px 0', color: '#636e72' }}>{getLotAddress(lot, lang)}</p>
                 <p style={{ margin: '4px 0' }}><strong>{lot.pricePerHour} LYD/hr</strong></p>
                 <button
                   onClick={() => navigate(`/parking/${lot.id}`)}

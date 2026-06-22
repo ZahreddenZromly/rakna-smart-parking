@@ -7,7 +7,7 @@ import { useSettings } from '../context/SettingsContext'
 import Icon from '../components/common/Icon'
 import Mascot from '../components/common/Mascot'
 import QueuePanel from '../components/queue/QueuePanel'
-import { PARKING_LOTS, getAvailabilityStatus } from '../utils/constants'
+import { PARKING_LOTS, getAvailabilityStatus, getLotName, getLotAddress } from '../utils/constants'
 
 const STATUS_BG = { available: C.available, limited: C.reserved, full: C.occupied }
 const STATUS_KEY = { available: 'available', limited: 'filling_up', full: 'full' }
@@ -15,7 +15,7 @@ const STATUS_KEY = { available: 'available', limited: 'filling_up', full: 'full'
 export default function ParkingDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { t, speak } = useSettings()
+  const { t, speak, lang } = useSettings()
   const lot = PARKING_LOTS.find((l) => l.id === id)
   const isFull = lot && getAvailabilityStatus(lot.availableSpots, lot.totalSpots) === 'full'
 
@@ -44,8 +44,8 @@ export default function ParkingDetailPage() {
             {t(STATUS_KEY[st])}
           </span>
         </div>
-        <h2 style={{ margin: '16px 0 4px', fontSize: '1.35rem', fontWeight: 700 }}>{lot.name}</h2>
-        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 5 }}><Icon name="pin" size={14} color="rgba(255,255,255,0.6)" /> {lot.address}</div>
+        <h2 style={{ margin: '16px 0 4px', fontSize: '1.35rem', fontWeight: 700 }}>{getLotName(lot, lang)}</h2>
+        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 5 }}><Icon name="pin" size={14} color="rgba(255,255,255,0.6)" /> {getLotAddress(lot, lang)}</div>
 
         {/* Occupancy bar */}
         <div style={{ marginTop: 18 }}>
