@@ -1,7 +1,7 @@
+/* global process, Buffer */
 // Vercel serverless function — clear cloud Text-to-Speech (great Arabic).
-// Multi-provider: set the env vars for ANY ONE provider in Vercel and it's used.
-// Keys are SECRET (server-side only). If none is set → 503 and the client falls
-// back to the device's built-in voice.
+// Works FOR FREE out of the box (no key, no card) via Google's TTS engine.
+// If you later add a premium provider key it takes over automatically.
 //
 //   Azure  (most native Arabic neural voices):
 //     AZURE_SPEECH_KEY, AZURE_SPEECH_REGION (e.g. "westeurope")
@@ -62,8 +62,15 @@ export default async function handler(req, res) {
       if (!r.ok) throw new Error('eleven ' + r.status)
       audioB64 = Buffer.from(await r.arrayBuffer()).toString('base64')
     } else {
-      res.status(503).json({ error: 'no_key' })
-      return
+      // FREE default — Google's TTS engine, no key and no card. Unofficial endpoint,
+      // best for short phrases (voice guidance), so cap length.
+      const tl = ar ? 'ar' : 'en'
+      const q = encodeURIComponent(String(text).slice(0, 200))
+      const r = await fetch(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${tl}&q=${q}`, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36' },
+      })
+      if (!r.ok) throw new Error('gtts ' + r.status)
+      audioB64 = Buffer.from(await r.arrayBuffer()).toString('base64')
     }
 
     res.setHeader('Cache-Control', 's-maxage=86400') // cache identical phrases at the edge
