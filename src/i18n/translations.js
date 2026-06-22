@@ -15,6 +15,8 @@ export const translations = {
     nav_bookings: 'Bookings',
     nav_rewards: 'Rewards',
     nav_profile: 'Profile',
+    nav_news: 'News',
+    nav_partner: 'Partner',
     // home
     location: 'Location',
     hi_there: 'Hi there',
@@ -516,6 +518,8 @@ export const translations = {
     nav_bookings: 'حجوزاتي',
     nav_rewards: 'المكافآت',
     nav_profile: 'حسابي',
+    nav_news: 'الأخبار',
+    nav_partner: 'شراكة',
     location: 'الموقع',
     hi_there: 'مرحباً',
     find_space: 'لنجد لك موقفاً!',

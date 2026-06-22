@@ -132,3 +132,121 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
   .rukna-btn { transition: none; }
   .rukna-btn:active { transform: none; }
 }
+
+/* ================================================================
+   RESPONSIVE LAYOUT SYSTEM
+   phone  < 640 px  → centred column, 430 px max, bottom nav
+   tablet   640–1023 → centred column, 680 px max, bottom nav
+   desktop ≥ 1024    → sticky side-nav + full-width content area
+   large  ≥ 1440    → wider sidebar + capped content column
+   ================================================================ */
+
+/* Outer shell */
+.rl-shell {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  font-family: 'Tajawal', system-ui, sans-serif;
+  background: var(--frame);
+}
+
+/* Side nav: hidden on phone/tablet */
+.rl-sidebar { display: none; }
+
+/* Main content pane */
+.rl-main {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,0,0,0.12);
+  position: relative;
+}
+
+/* Scrollable inner */
+.rl-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.rl-scroll::-webkit-scrollbar { display: none; }
+
+.rl-pad   { padding-left: 20px; padding-right: 20px; }
+.rl-nbpad { padding-bottom: 96px; } /* space for bottom nav */
+
+/* ---- Tablet (640 px+) ---- */
+@media (min-width: 640px) {
+  .rl-main { max-width: 680px; }
+}
+
+/* ---- Desktop (1024 px+) ---- */
+@media (min-width: 1024px) {
+  .rl-shell { justify-content: flex-start; align-items: stretch; }
+
+  .rl-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 230px;
+    flex-shrink: 0;
+    min-height: 100vh;
+    height: 100dvh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    background: var(--ink);
+    color: var(--on-ink);
+    padding: 28px 0 24px;
+    z-index: 20;
+    scrollbar-width: none;
+  }
+  .rl-sidebar::-webkit-scrollbar { display: none; }
+
+  .rl-main {
+    flex: 1;
+    max-width: none;
+    box-shadow: none;
+  }
+
+  /* bottom nav disappears on desktop */
+  .rl-bottom-nav { display: none !important; }
+
+  /* no bottom-nav padding; add top breathing room instead */
+  .rl-nbpad { padding-bottom: 48px; }
+  .rl-pad   { padding-left: 40px; padding-right: 40px; }
+}
+
+/* ---- Large / TV (1440 px+) ---- */
+@media (min-width: 1440px) {
+  .rl-sidebar { width: 270px; }
+  .rl-pad     { padding-left: 56px; padding-right: 56px; }
+}
+
+/* Content column: keep text readable on very wide screens */
+@media (min-width: 1024px) {
+  .rl-inner { max-width: 880px; }
+}
+@media (min-width: 1440px) {
+  .rl-inner { max-width: 1060px; }
+}
+
+/* Responsive grids — 1 col → 2 col → 3 col */
+@media (min-width: 640px) {
+  .grid-r { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (min-width: 1024px) {
+  .grid-r3 { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* Map height grows on larger screens */
+.map-box { height: 280px; }
+@media (min-width: 640px)  { .map-box { height: 360px; } }
+@media (min-width: 1024px) { .map-box { height: 480px; } }
+@media (min-width: 1440px) { .map-box { height: 560px; } }
+
+/* Top bar gets a bit of breathing room on desktop */
+@media (min-width: 1024px) {
+  .rl-topbar { padding-top: 28px !important; padding-bottom: 16px; }
+}
