@@ -26,13 +26,15 @@ export default function MyReservationsPage() {
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const load = async () => {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!user) { setLoading(false); return }
     setLoading(true)
-    try { setList(await getUserReservations(user.uid)) } catch { /* ignore */ }
-    setLoading(false)
-  }
-  useEffect(() => { load() }, [user])
+    getUserReservations(user.uid)
+      .then((rows) => setList(rows))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [user])
 
   const cancel = async (id) => {
     setList((l) => l.map((r) => r.id === id ? { ...r, status: 'cancelled' } : r))
@@ -41,7 +43,7 @@ export default function MyReservationsPage() {
 
   return (
     <MobileLayout bg={C.grey}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: C.black, margin: '24px 0 4px' }}>{t('my_bookings')}</h1>
+      <h1 className="anim-card" style={{ fontSize: '1.5rem', fontWeight: 700, color: C.black, margin: '24px 0 4px' }}>{t('my_bookings')}</h1>
       <p style={{ color: C.textMuted, fontSize: '0.88rem', margin: '0 0 18px' }}>{t('your_reservations')}</p>
 
       {!user ? (
@@ -51,7 +53,7 @@ export default function MyReservationsPage() {
       ) : list.length === 0 ? (
         <Empty navigate={navigate} t={t} />
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {list.map((r) => {
             const b = BADGE[r.status] || BADGE.active
             return (

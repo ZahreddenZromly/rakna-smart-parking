@@ -51,7 +51,7 @@ export default function MyVehiclesPage() {
         </form>
       )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {vehicles.map((v) => (
           <div key={v.plate} style={{ background: C.white, borderRadius: R.card, padding: 18, boxShadow: SHADOW.soft, border: v.primary ? '2px solid ' + C.yellow : '2px solid transparent' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>

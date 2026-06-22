@@ -8,7 +8,7 @@ import AdsCarousel from '../components/home/AdsCarousel'
 import AIAssistant from '../components/ai/AIAssistant'
 import MascotTip from '../components/common/MascotTip'
 import Icon from '../components/common/Icon'
-import { C, FONT, R, SHADOW, circleBtn } from '../styles/theme'
+import { C, R, SHADOW, circleBtn } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import { TRIPOLI_CENTER, PARKING_LOTS, getAvailabilityStatus } from '../utils/constants'
 

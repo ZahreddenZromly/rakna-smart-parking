@@ -1,4 +1,4 @@
-﻿import { Link, useNavigate } from 'react-router-dom'
+﻿import { Link } from 'react-router-dom'
 
 const s = {
   nav: {
@@ -38,7 +38,6 @@ const s = {
 }
 
 export default function Navbar() {
-  const navigate = useNavigate()
   return (
     <nav style={s.nav}>
       <Link to="/" style={s.logo}>🅿 Bourguiba Parking</Link>

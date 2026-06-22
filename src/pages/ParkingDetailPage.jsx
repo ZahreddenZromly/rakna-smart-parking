@@ -37,7 +37,7 @@ export default function ParkingDetailPage() {
       <TopBar title={t('parking_details')} />
 
       {/* Hero card */}
-      <div style={{ background: C.ink, borderRadius: R.card, padding: 22, color: C.onInk, boxShadow: SHADOW.card }}>
+      <div className="anim-card" style={{ background: C.ink, borderRadius: R.card, padding: 22, color: C.onInk, boxShadow: SHADOW.card }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ width: 60, height: 60, borderRadius: R.md, background: C.yellow, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="building" size={30} color={C.ink} /></div>
           <span style={{ background: STATUS_BG[st] + '33', color: STATUS_BG[st], fontWeight: 700, fontSize: '0.72rem', padding: '6px 12px', borderRadius: R.pill }}>
@@ -75,7 +75,7 @@ export default function ParkingDetailPage() {
       {isFull && <QueuePanel lot={lot} />}
 
       {/* Info grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>
+      <div className="stagger" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>
         {[
           { icon: 'wallet', label: t('price'), value: lot.pricePerHour + ' LYD/hr' },
           { icon: 'building', label: t('type'), value: lot.type },

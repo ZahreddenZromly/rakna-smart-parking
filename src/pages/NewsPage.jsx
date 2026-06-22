@@ -33,7 +33,7 @@ export default function NewsPage() {
   return (
     <MobileLayout bottomNav={false} bg={C.grey}>
       <TopBar title={t('news_feed')} />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 20 }}>
+      <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 20 }}>
         {news.map((n) => (
           <div key={n.id} style={{ background: C.white, borderRadius: R.card, padding: 18, boxShadow: SHADOW.soft }}>
             {n.image && <img src={n.image} alt="" style={{ width: '100%', height: 150, objectFit: 'cover', borderRadius: R.md, marginBottom: 12 }} />}
