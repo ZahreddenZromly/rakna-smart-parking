@@ -13,38 +13,40 @@ const ZONE_HUE = {
   disability:  '#0984E3',
 }
 
-// Parking-bay rectangle icon — looks like a real empty space viewed from above
+// Parking-bay rectangle icon — clearly rectangular, looks like an empty bay from above
 const bayIcon = (color, selected) => L.divIcon({
   className: '',
-  html: `<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1" y="1" width="14" height="24" rx="3"
+  html: `<svg width="22" height="36" viewBox="0 0 22 36" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="20" height="34" rx="2"
       fill="${color}"
-      fill-opacity="${selected ? 1 : 0.92}"
-      stroke="${selected ? '#1d6ef5' : 'rgba(255,255,255,0.85)'}"
-      stroke-width="${selected ? 2.5 : 1.5}"
+      fill-opacity="${selected ? 1 : 0.95}"
+      stroke="${selected ? '#1d6ef5' : 'rgba(255,255,255,0.9)'}"
+      stroke-width="${selected ? 3 : 2}"
     />
+    <line x1="11" y1="6" x2="11" y2="30"
+      stroke="rgba(255,255,255,0.45)" stroke-width="1.5" stroke-dasharray="3 3"/>
     ${selected
-      ? '<rect x="3.5" y="3.5" width="9" height="19" rx="1.5" fill="none" stroke="rgba(29,110,245,0.5)" stroke-width="1.2"/>'
-      : '<line x1="8" y1="5" x2="8" y2="21" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-dasharray="2 2"/>'
+      ? '<rect x="4" y="4" width="14" height="28" rx="1.5" fill="none" stroke="rgba(29,110,245,0.55)" stroke-width="1.5"/>'
+      : ''
     }
   </svg>`,
-  iconSize: [16, 26],
-  iconAnchor: [8, 13],
-  tooltipAnchor: [0, -15],
+  iconSize: [22, 36],
+  iconAnchor: [11, 18],
+  tooltipAnchor: [0, -20],
 })
 
 // Faint context bay for OTHER zones (available only, greyed out)
 const dimBayIcon = () => L.divIcon({
   className: '',
-  html: `<svg width="12" height="20" viewBox="0 0 12 20" xmlns="http://www.w3.org/2000/svg">
-    <rect x="1" y="1" width="10" height="18" rx="2"
-      fill="rgba(255,255,255,0.18)"
-      stroke="rgba(255,255,255,0.35)"
-      stroke-width="1"
+  html: `<svg width="16" height="26" viewBox="0 0 16 26" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="14" height="24" rx="2"
+      fill="rgba(255,255,255,0.15)"
+      stroke="rgba(255,255,255,0.4)"
+      stroke-width="1.5"
     />
   </svg>`,
-  iconSize: [12, 20],
-  iconAnchor: [6, 10],
+  iconSize: [16, 26],
+  iconAnchor: [8, 13],
 })
 
 function FitSpots({ spots }) {
@@ -92,7 +94,7 @@ export default function GISSpotMap({ allSpots, activeZone, selectedSpot, onSelec
   const zoneColor = ZONE_HUE[activeZone] || '#2BCBBA'
 
   return (
-    <div style={{ borderRadius: 16, overflow: 'hidden', border: '2px solid ' + C.border, position: 'relative' }}>
+    <div style={{ borderRadius: 16, overflow: 'hidden', border: '2px solid ' + C.border, position: 'relative', isolation: 'isolate' }}>
       <MapContainer
         center={centre}
         zoom={19}
