@@ -10,6 +10,9 @@ import { joinQueue } from '../../firebase/queueService'
 import { getUserReservations } from '../../firebase/reservationService'
 import { ensureNotifyPermission } from '../../utils/notify'
 
+const FAB_SIZE = 62
+const SNAP_MARGIN = 16
+
 export default function AIAssistant() {
   const { t, lang, isRTL } = useSettings()
   const { user, profile } = useAuth()
@@ -23,6 +26,48 @@ export default function AIAssistant() {
     return [{ role: 'assistant', content: g.text, actions: g.actions }]
   })
   const scrollRef = useRef(null)
+
+  // FAB drag state
+  const [fabPos, setFabPos] = useState({ bottom: 92, right: SNAP_MARGIN })
+  const [dragging, setDragging] = useState(false)
+  const hasMoved = useRef(false)
+  const pointerStart = useRef(null)
+  const posStart = useRef({ bottom: 92, right: SNAP_MARGIN })
+
+  const onFabPointerDown = (e) => {
+    hasMoved.current = false
+    pointerStart.current = { x: e.clientX, y: e.clientY }
+    posStart.current = { ...fabPos }
+    setDragging(true)
+    e.currentTarget.setPointerCapture(e.pointerId)
+    e.preventDefault()
+  }
+
+  const onFabPointerMove = (e) => {
+    if (!pointerStart.current) return
+    const dx = e.clientX - pointerStart.current.x
+    const dy = e.clientY - pointerStart.current.y
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasMoved.current = true
+    if (!hasMoved.current) return
+    const newRight = posStart.current.right - dx
+    const newBottom = posStart.current.bottom - dy
+    setFabPos({
+      right: Math.max(8, Math.min(newRight, window.innerWidth - FAB_SIZE - 8)),
+      bottom: Math.max(8, Math.min(newBottom, window.innerHeight - FAB_SIZE - 8)),
+    })
+  }
+
+  const onFabPointerUp = () => {
+    setDragging(false)
+    if (!hasMoved.current) {
+      setOpen(true)
+      return
+    }
+    // snap to nearest horizontal edge
+    const centerX = window.innerWidth - fabPos.right - FAB_SIZE / 2
+    const snapRight = centerX > window.innerWidth / 2 ? SNAP_MARGIN : window.innerWidth - FAB_SIZE - SNAP_MARGIN
+    setFabPos((p) => ({ ...p, right: snapRight }))
+  }
 
   // pull the user's bookings so the assistant can answer "my bookings"
   useEffect(() => {
@@ -53,7 +98,7 @@ export default function AIAssistant() {
     setInput('')
     setBusy(true)
     const ctx = buildContext(profile, bookings)
-    const local = answer(text, ctx, lang) // deterministic text + actions (works with no API key)
+    const local = answer(text, ctx, lang)
     try {
       const r = await fetch('/api/assistant', {
         method: 'POST',
@@ -62,7 +107,6 @@ export default function AIAssistant() {
       })
       if (!r.ok) throw new Error('api')
       const data = await r.json()
-      // use Claude's richer wording when available, but keep the engine's actions
       setMessages((m) => [...m, { role: 'assistant', content: data.text || local.text, actions: local.actions }])
     } catch {
       setMessages((m) => [...m, { role: 'assistant', content: local.text, actions: local.actions }])
@@ -70,7 +114,6 @@ export default function AIAssistant() {
     setBusy(false)
   }
 
-  // perform an action chip
   const exec = async (a) => {
     if (a.kind === 'ask') { send(a.q); return }
     setOpen(false)
@@ -92,13 +135,40 @@ export default function AIAssistant() {
   return (
     <>
       {!open && (
-        <button onClick={() => setOpen(true)} aria-label={t('ai_assistant')} style={{
-          position: 'fixed', bottom: 90, insetInlineEnd: 'calc(50% - 215px + 16px)', zIndex: 1500,
-          width: 62, height: 62, borderRadius: '50%', border: 'none', cursor: 'pointer',
-          background: C.ink, boxShadow: SHADOW.float,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'visible', padding: 0,
-        }}>
+        <button
+          onPointerDown={onFabPointerDown}
+          onPointerMove={onFabPointerMove}
+          onPointerUp={onFabPointerUp}
+          aria-label={t('ai_assistant')}
+          style={{
+            position: 'fixed',
+            bottom: fabPos.bottom,
+            right: fabPos.right,
+            zIndex: 1500,
+            width: FAB_SIZE, height: FAB_SIZE, borderRadius: '50%',
+            border: '2.5px solid rgba(255,255,255,0.15)',
+            cursor: dragging ? 'grabbing' : 'grab',
+            background: C.ink,
+            boxShadow: dragging
+              ? '0 12px 36px rgba(0,0,0,0.35)'
+              : SHADOW.float,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'visible', padding: 0,
+            touchAction: 'none',
+            transition: dragging ? 'box-shadow 0.15s' : 'bottom 0.25s cubic-bezier(0.34,1.56,0.64,1), right 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s',
+            transform: dragging ? 'scale(1.08)' : 'scale(1)',
+          }}
+        >
           <Mascot size={52} mood="idle" />
+          {/* subtle pulse ring */}
+          {!dragging && (
+            <span style={{
+              position: 'absolute', inset: -6, borderRadius: '50%',
+              border: '2px solid rgba(79,123,245,0.35)',
+              animation: 'glowPulse 2.4s ease-in-out infinite',
+              pointerEvents: 'none',
+            }} />
+          )}
         </button>
       )}
 
@@ -106,7 +176,7 @@ export default function AIAssistant() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 1600, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', fontFamily: FONT }}>
           <div onClick={() => setOpen(false)} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', animation: 'fadeIn 0.2s ease' }} />
           <div style={{
-            position: 'relative', width: '100%', maxWidth: 430, height: '82vh',
+            position: 'relative', width: '100%', maxWidth: 480, height: '82vh',
             background: C.grey, borderTopLeftRadius: 28, borderTopRightRadius: 28,
             display: 'flex', flexDirection: 'column', boxShadow: SHADOW.float, animation: 'sheetUp 0.3s ease',
           }}>
@@ -134,7 +204,6 @@ export default function AIAssistant() {
                     borderBottomLeftRadius: m.role === 'user' ? 16 : 4,
                     boxShadow: SHADOW.soft, whiteSpace: 'pre-wrap',
                   }}>{m.content}</div>
-                  {/* action chips */}
                   {m.actions?.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
                       {m.actions.map((a, n) => (
