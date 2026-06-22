@@ -10,6 +10,7 @@ const TABS = [
   { to: '/admin/users', key: 'a_users', icon: 'user' },
   { to: '/admin/content', key: 'a_content', icon: 'news' },
   { to: '/admin/parkings', key: 'a_parkings', icon: 'pin' },
+  { to: '/admin/revenue', key: 'a_revenue', icon: 'wallet' },
   { to: '/admin/queue', key: 'a_queue', icon: 'clock' },
   { to: '/admin/partners', key: 'a_partners', icon: 'building' },
   { to: '/admin/analytics', key: 'a_analytics', icon: 'star' },

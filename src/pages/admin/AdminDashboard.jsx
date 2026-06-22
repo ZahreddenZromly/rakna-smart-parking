@@ -37,6 +37,7 @@ export default function AdminDashboard() {
     { label: t('a_users'), icon: 'user', to: '/admin/users' },
     { label: t('a_content'), icon: 'news', to: '/admin/content' },
     { label: t('a_parkings'), icon: 'pin', to: '/admin/parkings' },
+    { label: t('a_revenue'), icon: 'wallet', to: '/admin/revenue' },
     { label: t('a_queue'), icon: 'clock', to: '/admin/queue' },
     { label: t('a_partners'), icon: 'building', to: '/admin/partners' },
     { label: t('a_analytics'), icon: 'star', to: '/admin/analytics' },

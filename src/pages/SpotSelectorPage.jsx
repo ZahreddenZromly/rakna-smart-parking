@@ -39,8 +39,16 @@ export default function SpotSelectorPage() {
   const available = zoneSpots.filter((s) => s.status === 'available').length
 
   const pickSpot = (spot) => { setSelectedSpot(spot); speak(`${t('selected')} ${spot.id}`) }
-  const confirmBooking = (spot) =>
-    navigate('/reserve/' + id + '?spot=' + spot.id + '&zone=' + spot.zone)
+  const confirmBooking = (spot, info) => {
+    const qs = new URLSearchParams({ spot: spot.id, zone: spot.zone })
+    if (info) {
+      if (!info.fullDay && info.from != null) { qs.set('from', info.from); qs.set('to', info.to) }
+      qs.set('duration', info.duration)
+      qs.set('total', info.total)
+      if (info.fullDay) qs.set('fullDay', '1')
+    }
+    navigate('/reserve/' + id + '?' + qs.toString())
+  }
 
   return (
     <MobileLayout bottomNav={false} bg={C.white} pad={false}>

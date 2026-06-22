@@ -25,11 +25,31 @@ const STEPS = [
   { icon: 'map', tk: 'pstep2_title', dk: 'pstep2_desc' },
   { icon: 'sparkle', tk: 'pstep3_title', dk: 'pstep3_desc' },
 ]
-// price = monthly LYD; commission = % of revenue; custom = quote (revenue share)
+// price = monthly LYD; commission = Rakna's % cut per booking; owner keeps (1 - commission)
+// Model: pay monthly → lower per-booking cut → more profit for the owner
 const TIERS = [
-  { key: 'starter', price: '0', monthly: 0, commission: 0.15, tag: 'tier_starter_tag', feats: ['tier_starter_1', 'tier_starter_2', 'tier_starter_3'] },
-  { key: 'pro', price: '149', monthly: 149, commission: 0.08, tag: 'tier_pro_tag', feats: ['tier_pro_1', 'tier_pro_2', 'tier_pro_3'], popular: true },
-  { key: 'ent', price: null, monthly: null, commission: 0.25, tag: 'tier_ent_tag', feats: ['tier_ent_1', 'tier_ent_2', 'tier_ent_3'], custom: true },
+  {
+    key: 'starter', price: '0', monthly: 0, commission: 0.40,
+    tag: 'tier_starter_tag',
+    feats: ['tier_starter_1', 'tier_starter_2', 'tier_starter_3'],
+  },
+  {
+    key: 'growth', price: '199', monthly: 199, commission: 0.28,
+    tag: 'tier_growth_tag',
+    feats: ['tier_growth_1', 'tier_growth_2', 'tier_growth_3'],
+    popular: true,
+  },
+  {
+    key: 'pro', price: '449', monthly: 449, commission: 0.15,
+    tag: 'tier_pro_tag',
+    feats: ['tier_pro_1', 'tier_pro_2', 'tier_pro_3'],
+  },
+  {
+    key: 'ent', price: null, monthly: null, commission: 0.40,
+    tag: 'tier_ent_tag',
+    feats: ['tier_ent_1', 'tier_ent_2', 'tier_ent_3'],
+    custom: true,
+  },
 ]
 const lyd = (n) => Math.round(n).toLocaleString()
 
@@ -43,7 +63,7 @@ export default function PartnerPage() {
   })
   const [price, setPrice] = useState(2)
   const [occ, setOcc] = useState(55)
-  const [plan, setPlan] = useState('pro')
+  const [plan, setPlan] = useState('growth')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [done, setDone] = useState(false)
@@ -182,9 +202,11 @@ export default function PartnerPage() {
                 </div>
               </div>
               <div style={{ fontSize: '0.76rem', color: tr.popular ? C.yellow : C.textMuted, fontWeight: 600, marginBottom: 4 }}>{t(tr.tag)}</div>
-              {/* cost line: commission / share */}
+              {/* cost line: Rakna's cut / owner keeps */}
               <div style={{ fontSize: '0.78rem', color: tr.popular ? 'rgba(255,255,255,0.8)' : C.textSoft, marginBottom: 10 }}>
-                {tr.custom ? t('tier_rev_share') : `${Math.round(tr.commission * 100)}% ${t('tier_per_booking')} · ${t('tier_no_setup')}`}
+                {tr.custom
+                  ? t('tier_rev_share')
+                  : `ركنة ${Math.round(tr.commission * 100)}% · ${t('tier_you_keep')} ${Math.round((1 - tr.commission) * 100)}%`}
               </div>
               {tr.feats.map((f) => (
                 <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0', fontSize: '0.82rem' }}>

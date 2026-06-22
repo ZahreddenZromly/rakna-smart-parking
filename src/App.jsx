@@ -30,6 +30,7 @@ import AdminParkings from './pages/admin/AdminParkings'
 import AdminAnalytics from './pages/admin/AdminAnalytics'
 import AdminQueue from './pages/admin/AdminQueue'
 import AdminPartners from './pages/admin/AdminPartners'
+import AdminRevenue from './pages/admin/AdminRevenue'
 import PartnerPage from './pages/PartnerPage'
 import QueueWatcher from './components/queue/QueueWatcher'
 import { C, FONT } from './styles/theme'
@@ -88,6 +89,7 @@ export default function App() {
               <Route path="/admin/parkings" element={<AdminParkings />} />
               <Route path="/admin/analytics" element={<AdminAnalytics />} />
               <Route path="/admin/queue" element={<AdminQueue />} />
+              <Route path="/admin/revenue" element={<AdminRevenue />} />
               <Route path="/admin/partners" element={<AdminPartners />} />
             </Routes>
           </AccountGate>
