@@ -26,30 +26,38 @@ const WORLD_TOP = LOT_BLUEPRINT.clip.maxY
 const fx = (x) => x
 const fy = (y) => WORLD_TOP - y
 
-const BAY_W = 2.6   // along the row (CAD units)
-const BAY_D = 4.7   // depth, perpendicular to the row
+// Small tidy slots — kept narrow so bays never overlap, even where the real
+// lot packs spots close together (e.g. the taxi ring + its inner island).
+const BAY_W = 2.0   // along the row (CAD units)
+const BAY_D = 3.2   // depth, perpendicular to the row
 
-// Each bay's angle is the LOCAL ROW DIRECTION: the principal axis of the spot
-// together with its nearest same-zone neighbours. This keeps every bay in a
-// row perfectly parallel instead of wobbling toward whichever single neighbour
-// happens to be closest. Coordinates never change, so cache by spot id.
+// Each bay's angle follows the LOCAL ROW DIRECTION. We take the nearest
+// neighbour, then the nearest neighbour that sits on the OPPOSITE side of the
+// spot (>120° apart). Those two bracket the spot, so the line through them is
+// the true row tangent — this works for straight rows, ring sides, and the
+// inner island alike, instead of being thrown off by a same-side neighbour.
+// Bay width runs along the tangent, depth perpendicular. Cache by spot id.
 const _angleCache = new Map()
 function rowAngle(spot, peers) {
   if (_angleCache.has(spot.id)) return _angleCache.get(spot.id)
-  const near = peers
+  const others = peers
     .filter((o) => o !== spot)
-    .map((o) => ({ o, d: (o.x - spot.x) ** 2 + (o.y - spot.y) ** 2 }))
+    .map((o) => ({ dx: o.x - spot.x, dy: o.y - spot.y, d: (o.x - spot.x) ** 2 + (o.y - spot.y) ** 2 }))
     .sort((a, b) => a.d - b.d)
-    .slice(0, 4)
-    .map((e) => e.o)
-  const pts = [spot, ...near]
-  const n = pts.length
-  let mx = 0, my = 0
-  for (const p of pts) { mx += p.x; my += p.y }
-  mx /= n; my /= n
-  let a = 0, b = 0, c = 0
-  for (const p of pts) { const dx = p.x - mx, dy = p.y - my; a += dx * dx; b += dx * dy; c += dy * dy }
-  const angle = (n > 1) ? 0.5 * Math.atan2(2 * b, a - c) : 0
+  let angle = 0
+  if (others.length) {
+    const n1 = others[0]
+    const a1 = Math.atan2(n1.dy, n1.dx)
+    let n2 = null
+    for (const o of others.slice(1)) {
+      let da = Math.abs(Math.atan2(o.dy, o.dx) - a1)
+      if (da > Math.PI) da = 2 * Math.PI - da
+      if (da > 2.094) { n2 = o; break }   // ~120° → opposite side
+    }
+    const tx = n2 ? n1.dx - n2.dx : n1.dx
+    const ty = n2 ? n1.dy - n2.dy : n1.dy
+    angle = Math.atan2(ty, tx)
+  }
   _angleCache.set(spot.id, angle)
   return angle
 }
