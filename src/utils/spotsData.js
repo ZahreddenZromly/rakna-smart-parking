@@ -26,27 +26,22 @@ export const ZONE_META = {
 
 export const ZONE_ORDER = ['taxi', 'reservation', 'regular', 'bus', 'disability']
 
-// synthetic spots (no map coords) — used only for the disability zone for now
-const buildSynthetic = ({ zone, prefix, count, availBias }) => {
-  const spots = []
-  for (let i = 0; i < count; i++) {
-    const number = i + 1
-    spots.push({
-      id: `${prefix}-${String(number).padStart(2, '0')}`,
-      zone, prefix, number, col: i % 2, row: Math.floor(i / 2),
-      status: rnd(availBias), mapped: false,
-    })
-  }
-  spots.slice(0, 3).forEach((s) => { s.status = 'available' })
-  return spots
-}
+// Real bays the engineers designated as accessible / disability spots.
+// They keep their original IDs (e.g. B-05) but are grouped into the disability zone.
+const DISABILITY_IDS = new Set([
+  'B-05', 'B-06', 'B-18', 'B-19',
+  'C-01', 'C-02', 'C-03', 'C-13', 'C-14', 'C-21', 'C-22', 'C-34', 'C-35',
+])
 
 // real spots from the DXF, grouped by zone, with status + row/col + coordinates
 const groupReal = () => {
   const byZone = {}
-  REAL_SPOTS.forEach((s) => { (byZone[s.zone] ||= []).push(s) })
+  REAL_SPOTS.forEach((s) => {
+    const zone = DISABILITY_IDS.has(s.id) ? 'disability' : s.zone
+    ;(byZone[zone] ||= []).push({ ...s, zone })
+  })
   const out = {}
-  const bias = { taxi: 0.4, reservation: 0.45, regular: 0.4, bus: 0.5 }
+  const bias = { taxi: 0.4, reservation: 0.45, regular: 0.4, bus: 0.5, disability: 0.55 }
   Object.entries(byZone).forEach(([zone, arr]) => {
     const spots = arr.map((s, i) => {
       const gps = cadToGPS(s.x, s.y)
@@ -77,7 +72,7 @@ export const LOT_SPOTS = {
       reservation: { label: 'Reservation', spots: realByZone.reservation || [] },
       regular:     { label: 'Regular',     spots: realByZone.regular || [] },
       bus:         { label: 'Bus / Coach', spots: realByZone.bus || [] },
-      disability:  { label: 'Disability',  spots: buildSynthetic({ zone: 'disability', prefix: 'E', count: 6, availBias: 0.6 }) },
+      disability:  { label: 'Disability',  spots: realByZone.disability || [] },
     },
   },
 }
