@@ -109,6 +109,11 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 @keyframes mascotSad { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(3px) rotate(-2deg); } }
 @keyframes mascotWorried { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
 @keyframes mascotTear { 0% { opacity: 0; transform: translateY(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(9px); } }
+@keyframes mascotFloat { 0% { opacity: 0; transform: translateY(4px) scale(0.6); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px) scale(1.05); } }
+@keyframes mascotConfetti { 0% { opacity: 0; transform: translateY(-6px) rotate(0deg); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(16px) rotate(220deg); } }
+@keyframes mascotSnow { 0% { opacity: 0; transform: translateY(-6px); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(18px); } }
+@keyframes mascotZzz { 0% { opacity: 0; transform: translate(0,2px) scale(0.7); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(6px,-14px) scale(1.1); } }
+@keyframes mascotShake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
 
 .mascot-bob { animation: mascotBob 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-eye { animation: mascotBlink 4.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -121,7 +126,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 .mascot-worried { animation: mascotWorried 0.7s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-glow { animation: mascotGlow 3.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 @media (prefers-reduced-motion: reduce) {
-  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark, .mascot-sad, .mascot-worried, .mascot-tear, .mascot-sweat, .mascot-glow { animation: none !important; }
+  .mascot-bob, .mascot-eye, .mascot-hand, .mascot-dot, .mascot-happy, .mascot-spark, .mascot-sad, .mascot-worried, .mascot-tear, .mascot-sweat, .mascot-glow, .mascot-float, .mascot-confetti, .mascot-snow, .mascot-zzz, .mascot-shake { animation: none !important; }
 }
 
 /* Tappable Rukna — gives a little "press" feedback so users know it's interactive */

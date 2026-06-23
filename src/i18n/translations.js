@@ -21,6 +21,8 @@ export const translations = {
     reserved_label: 'Reserved',
     occupied_label: 'Occupied',
     spots_not_mapped: "This zone isn't on the blueprint yet.",
+    meet_raknoush: 'Meet Raknoush',
+    meet_raknoush_sub: 'Your parking buddy — here to help in every mood.',
     // home
     location: 'Location',
     hi_there: 'Hi there',
@@ -528,6 +530,8 @@ export const translations = {
     reserved_label: 'محجوز',
     occupied_label: 'مشغول',
     spots_not_mapped: 'هذه المنطقة غير متوفرة على المخطط بعد.',
+    meet_raknoush: 'تعرّف على ركنوش',
+    meet_raknoush_sub: 'رفيقك في المواقف — هنا لمساعدتك بكل مزاج.',
     location: 'الموقع',
     hi_there: 'مرحباً',
     find_space: 'لنجد لك موقفاً!',

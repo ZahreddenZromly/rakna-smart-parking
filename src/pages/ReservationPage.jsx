@@ -53,7 +53,7 @@ export default function ReservationPage() {
     <MobileLayout bottomNav={false} bg={C.grey}>
       {/* Success header */}
       <div style={{ textAlign: 'center', paddingTop: 28 }}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}><Mascot size={120} mood="happy" /></div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}><Mascot size={120} mood="excited" /></div>
         <h2 style={{ margin: '8px 0 4px', fontSize: '1.4rem', fontWeight: 700, color: C.black }}>{t('booking_confirmed')}</h2>
         <p style={{ color: C.yellowDark, fontWeight: 600, fontSize: '0.85rem', margin: '0 0 6px' }}>{t('booking_thanks')}</p>
         <p style={{ color: C.textSoft, fontSize: '0.9rem', margin: 0 }}>

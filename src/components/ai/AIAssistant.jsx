@@ -183,7 +183,7 @@ export default function AIAssistant() {
             {/* header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 20px', borderBottom: '1px solid ' + C.greyMid }}>
               <div style={{ width: 46, height: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Mascot size={46} mood={busy ? 'thinking' : 'wave'} />
+                <Mascot size={46} mood={busy ? 'thinking' : 'helpful'} />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, color: C.black }}>{t('ai_assistant')}</div>

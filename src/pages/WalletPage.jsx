@@ -57,7 +57,7 @@ export default function WalletPage() {
       </div>
 
       {/* Rukna tip */}
-      <MascotTip tips={['tip_wallet']} storageKey="rakna_tip_wallet" />
+      <MascotTip tips={['tip_wallet']} storageKey="rakna_tip_wallet" mood="cool" />
 
       {/* Top up */}
       <div style={{ background: C.white, borderRadius: R.card, padding: 18, marginTop: 16, boxShadow: SHADOW.soft }}>

@@ -4,6 +4,7 @@ import { C, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import Icon from '../components/common/Icon'
 import MascotTip from '../components/common/MascotTip'
+import RaknoushGallery from '../components/common/RaknoushGallery'
 
 const REWARDS = [
   { id: 1, title: '1 Hour Free', cost: 100, icon: 'logo' },
@@ -55,7 +56,12 @@ export default function LoyaltyPage() {
       </div>
 
       {/* Rukna tip */}
-      <MascotTip tips={['tip_rewards']} storageKey="rakna_tip_rewards" />
+      <MascotTip tips={['tip_rewards']} storageKey="rakna_tip_rewards" mood="party" />
+
+      {/* Meet Raknoush — full mood gallery */}
+      <div style={{ marginTop: 18 }}>
+        <RaknoushGallery />
+      </div>
 
       {/* Rewards grid */}
       <h3 style={{ fontSize: '1rem', fontWeight: 700, color: C.black, margin: '22px 0 12px' }}>{t('redeem')}</h3>
