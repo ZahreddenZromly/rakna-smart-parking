@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import MobileLayout from '../components/common/MobileLayout'
 import TopBar from '../components/common/TopBar'
-import GISSpotMap from '../components/parking/GISSpotMap'
+import BlueprintSpotMap from '../components/parking/BlueprintSpotMap'
 import ConfirmBookingSheet from '../components/parking/ConfirmBookingSheet'
 import Icon from '../components/common/Icon'
 import { C, R, SHADOW } from '../styles/theme'
@@ -96,7 +96,7 @@ export default function SpotSelectorPage() {
           <span style={{ fontSize: '0.82rem', color: C.available, fontWeight: 600 }}>{available} {t('available_count')}</span>
         </div>
 
-        <GISSpotMap
+        <BlueprintSpotMap
           allSpots={allSpots}
           activeZone={activeZone}
           selectedSpot={selectedSpot}
