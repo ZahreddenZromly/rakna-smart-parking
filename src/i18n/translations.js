@@ -23,6 +23,7 @@ export const translations = {
     spots_not_mapped: "This zone isn't on the blueprint yet.",
     meet_raknoush: 'Meet Raknoush',
     meet_raknoush_sub: 'Your parking buddy — here to help in every mood.',
+    raknoush_news: "Raknoush's latest updates & offers",
     // home
     location: 'Location',
     hi_there: 'Hi there',
@@ -532,6 +533,7 @@ export const translations = {
     spots_not_mapped: 'هذه المنطقة غير متوفرة على المخطط بعد.',
     meet_raknoush: 'تعرّف على ركنوش',
     meet_raknoush_sub: 'رفيقك في المواقف — هنا لمساعدتك بكل مزاج.',
+    raknoush_news: 'آخر أخبار وعروض ركنوش',
     location: 'الموقع',
     hi_there: 'مرحباً',
     find_space: 'لنجد لك موقفاً!',

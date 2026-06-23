@@ -99,7 +99,7 @@ export default function PartnerPage() {
       <MobileLayout bottomNav={false} bg={C.grey}>
         <TopBar title={t('partner_for_business')} />
         <div style={{ textAlign: 'center', padding: '36px 16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'center' }}><Mascot size={140} mood="happy" /></div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}><Mascot size={140} mood="excited" /></div>
           <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: C.black, margin: '12px 0 8px' }}>{t('partner_thanks_title')}</h1>
           <p style={{ color: C.textSoft, fontSize: '0.95rem', lineHeight: 1.6, maxWidth: 320, margin: '0 auto 24px' }}>{t('partner_thanks_sub')}</p>
           <button onClick={() => { setDone(false); setForm((f) => ({ ...f, businessName: '', contactName: '', email: '', phone: '', city: '', message: '' })) }} style={ghostBtn}>{t('partner_another')}</button>
@@ -117,7 +117,7 @@ export default function PartnerPage() {
       <div style={{ background: C.ink, borderRadius: R.card, padding: 22, color: C.onInk, boxShadow: SHADOW.card, position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -30, insetInlineEnd: -20, width: 120, height: 120, borderRadius: '50%', background: C.yellow, opacity: 0.18 }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'relative' }}>
-          <div style={{ flexShrink: 0 }}><Mascot size={72} mood="wave" /></div>
+          <div style={{ flexShrink: 0 }}><Mascot size={72} mood="determined" /></div>
           <h1 style={{ fontSize: '1.35rem', fontWeight: 800, margin: 0, lineHeight: 1.25 }}>{t('partner_title')}</h1>
         </div>
         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: 1.6, margin: '14px 0 0' }}>{t('partner_sub')}</p>

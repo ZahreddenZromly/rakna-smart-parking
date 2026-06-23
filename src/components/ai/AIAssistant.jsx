@@ -4,7 +4,7 @@ import { C, R, SHADOW, FONT } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 import { useAuth } from '../../context/AuthContext'
 import Icon from '../common/Icon'
-import Mascot from '../common/Mascot'
+import CyclingMascot from '../common/CyclingMascot'
 import { buildContext, answer, greeting, suggestions } from '../../utils/assistantEngine'
 import { joinQueue } from '../../firebase/queueService'
 import { getUserReservations } from '../../firebase/reservationService'
@@ -159,7 +159,7 @@ export default function AIAssistant() {
             transform: dragging ? 'scale(1.08)' : 'scale(1)',
           }}
         >
-          <Mascot size={52} mood="idle" />
+          <CyclingMascot size={52} intervalMs={3200} />
           {/* subtle pulse ring */}
           {!dragging && (
             <span style={{
@@ -183,7 +183,7 @@ export default function AIAssistant() {
             {/* header */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 20px', borderBottom: '1px solid ' + C.greyMid }}>
               <div style={{ width: 46, height: 46, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Mascot size={46} mood={busy ? 'thinking' : 'helpful'} />
+                <CyclingMascot size={46} intervalMs={2400} forced={busy ? 'thinking' : null} />
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, color: C.black }}>{t('ai_assistant')}</div>

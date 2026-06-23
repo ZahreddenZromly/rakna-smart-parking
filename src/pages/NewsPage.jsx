@@ -6,6 +6,7 @@ import { useSettings } from '../context/SettingsContext'
 import { useAuth } from '../context/AuthContext'
 import { getNews, likeNews, recordNewsView } from '../firebase/contentService'
 import Icon from '../components/common/Icon'
+import CyclingMascot from '../components/common/CyclingMascot'
 
 export default function NewsPage() {
   const { t } = useSettings()
@@ -33,6 +34,21 @@ export default function NewsPage() {
   return (
     <MobileLayout bottomNav={false} bg={C.grey}>
       <TopBar title={t('news_feed')} />
+
+      {/* Raknoush news banner */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 12, background: C.white,
+        borderRadius: R.card, padding: '10px 14px', boxShadow: SHADOW.soft, marginBottom: 14,
+      }}>
+        <div style={{ flexShrink: 0, width: 52, display: 'flex', justifyContent: 'center' }}>
+          <CyclingMascot size={52} intervalMs={2600} />
+        </div>
+        <div>
+          <div style={{ fontWeight: 700, color: C.black }}>{t('news_feed')}</div>
+          <div style={{ fontSize: '0.8rem', color: C.textMuted }}>{t('raknoush_news')}</div>
+        </div>
+      </div>
+
       <div className="stagger" style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 20 }}>
         {news.map((n) => (
           <div key={n.id} style={{ background: C.white, borderRadius: R.card, padding: 18, boxShadow: SHADOW.soft }}>

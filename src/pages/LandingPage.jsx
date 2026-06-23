@@ -19,7 +19,13 @@ export default function LandingPage() {
         <div className="blob" style={{ position: 'absolute', bottom: 40, right: -40, width: 120, height: 120, borderRadius: '50%', background: C.accent, opacity: 0.16, filter: 'blur(6px)' }} />
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 32px', position: 'relative', zIndex: 2 }}>
-          <div style={{ marginBottom: 8 }}><Mascot size={150} mood="wave" /></div>
+          {/* Raknoush crew — a few moods to show his personality */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', marginBottom: 8, marginInlineStart: -8 }}>
+            <Mascot size={74} mood="party" style={{ marginInlineEnd: -12, marginBottom: 8 }} />
+            <Mascot size={132} mood="determined" />
+            <Mascot size={78} mood="happy" style={{ marginInlineStart: -10, marginBottom: 4 }} />
+            <Mascot size={60} mood="cool" style={{ marginInlineStart: -6, marginBottom: 16 }} />
+          </div>
           {/* Rukna says hi — tap to hear it */}
           <button onClick={() => speak(t('rukna_intro'))} title={t('tap_me_hint')} style={{
             display: 'inline-flex', alignItems: 'center', gap: 8, alignSelf: 'flex-start', cursor: 'pointer',
