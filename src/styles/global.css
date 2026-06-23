@@ -114,6 +114,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 @keyframes mascotSnow { 0% { opacity: 0; transform: translateY(-6px); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(18px); } }
 @keyframes mascotZzz { 0% { opacity: 0; transform: translate(0,2px) scale(0.7); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(6px,-14px) scale(1.1); } }
 @keyframes mascotShake { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+@keyframes mascotSpin { to { transform: rotate(360deg); } }
 
 .mascot-bob { animation: mascotBob 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
 .mascot-eye { animation: mascotBlink 4.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }

@@ -16,6 +16,8 @@ export const RAKNOUSH_MOODS = [
   { mood: 'party',      en: 'Party',       ar: 'محتفل' },
   { mood: 'shopping',   en: 'Shopping',    ar: 'متسوّق' },
   { mood: 'winter',     en: 'Winter',      ar: 'شتاء' },
+  { mood: 'flower',     en: 'Flower',      ar: 'وردة' },
+  { mood: 'waiting',    en: 'Waiting',     ar: 'ينتظر' },
 ]
 
 export const ALL_MOODS = RAKNOUSH_MOODS.map((m) => m.mood)

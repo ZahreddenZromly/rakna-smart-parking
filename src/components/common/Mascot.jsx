@@ -31,6 +31,8 @@ const CONF = {
   party:      { eyes: 'happy',     mouth: 'open',  anim: 'happy', partyHat: true, confetti: true, blower: true },
   shopping:   { eyes: 'happy',     mouth: 'smile', anim: 'bob', bags: true },
   winter:     { eyes: 'happy',     mouth: 'calm',  anim: 'bob', beanie: true, scarf: true, snow: true, hidePCap: true, armsOut: true },
+  flower:     { eyes: 'happy',     mouth: 'open',  anim: 'bob', flower: true },
+  waiting:    { eyes: 'dots',      mouth: 'calm',  anim: 'bob', clock: true },
   sad:        { eyes: 'dots',      mouth: 'frown', anim: 'sad', brows: 'sad', tear: true, noGlow: true, noCheeks: true },
   worried:    { eyes: 'dots',      mouth: 'o',     anim: 'worried', brows: 'worried', sweat: true, noGlow: true, noCheeks: true, smallO: true },
 }
@@ -125,7 +127,7 @@ export default function Mascot({ size = 120, mood = 'idle', style }) {
     : c.anim === 'worried' ? 'mascot-worried' : 'mascot-bob'
 
   const customArms = c.armsUp || c.thumbsUp || c.fist || c.point || c.wheel
-    || c.bags || c.camera || c.handsCheeks || c.armsOut || c.okHand || c.fingerUp || c.blower
+    || c.bags || c.camera || c.handsCheeks || c.armsOut || c.okHand || c.fingerUp || c.blower || c.flower
   const showCheeks = !c.noCheeks
 
   return (
@@ -196,6 +198,18 @@ export default function Mascot({ size = 120, mood = 'idle', style }) {
           <circle className="mascot-dot" cx="50" cy="30" r="2.6" fill={INK} style={{ animation: 'mascotThink 1.1s ease-in-out 0s infinite' }} />
           <circle className="mascot-dot" cx="60" cy="30" r="2.6" fill={INK} style={{ animation: 'mascotThink 1.1s ease-in-out 0.2s infinite' }} />
           <circle className="mascot-dot" cx="70" cy="30" r="2.6" fill={INK} style={{ animation: 'mascotThink 1.1s ease-in-out 0.4s infinite' }} />
+        </g>
+      )}
+
+      {/* waiting clock — ticks while Raknoush waits in line */}
+      {c.clock && (
+        <g>
+          <circle cx="96" cy="28" r="9.5" fill="#FFF" stroke={INK} strokeWidth="2" />
+          <circle cx="96" cy="28" r="1.6" fill={INK} />
+          <line x1="96" y1="28" x2="96" y2="22" stroke={INK} strokeWidth="1.8" strokeLinecap="round"
+            style={{ transformBox: 'fill-box', transformOrigin: 'bottom', animation: 'mascotSpin 3s linear infinite' }} />
+          <line x1="96" y1="28" x2="100.5" y2="28" stroke={INK} strokeWidth="1.8" strokeLinecap="round"
+            style={{ transformBox: 'fill-box', transformOrigin: 'left', animation: 'mascotSpin 14s linear infinite' }} />
         </g>
       )}
 
@@ -329,6 +343,24 @@ export default function Mascot({ size = 120, mood = 'idle', style }) {
             <circle cx="110" cy="79" r="5.5" fill="var(--brand)" stroke="var(--brand-dark)" strokeWidth="2" />
             <path d="M70 62 q12 -2 22 -6" stroke="#E0245E" strokeWidth="4" fill="none" strokeLinecap="round" />
             <path d="M92 56 l10 -3 -2 8 Z" fill="#F2A900" />
+          </>
+        )}
+        {c.flower && (
+          <>
+            {/* left hand resting */}
+            <line x1="22" y1="74" x2="11" y2="80" stroke="var(--brand-dark)" strokeWidth="5" strokeLinecap="round" />
+            <circle cx="9" cy="82" r="5.5" fill="var(--brand)" stroke="var(--brand-dark)" strokeWidth="2" />
+            {/* right arm holding a flower up */}
+            <line x1="98" y1="74" x2="106" y2="60" stroke="var(--brand-dark)" strokeWidth="5" strokeLinecap="round" />
+            <circle cx="107" cy="58" r="5.5" fill="var(--brand)" stroke="var(--brand-dark)" strokeWidth="2" />
+            <line x1="107" y1="58" x2="107" y2="40" stroke="#2E9E5B" strokeWidth="2.6" strokeLinecap="round" />
+            <path d="M107 50 q-7 -2 -9 -7 q7 0 9 5 Z" fill="#2E9E5B" />
+            <g fill="#FF5C8A">
+              <circle cx="107" cy="32" r="3.6" /><circle cx="112" cy="37" r="3.6" />
+              <circle cx="110" cy="43" r="3.6" /><circle cx="104" cy="43" r="3.6" />
+              <circle cx="102" cy="37" r="3.6" />
+            </g>
+            <circle cx="107" cy="38" r="3" fill="#F2C200" />
           </>
         )}
 

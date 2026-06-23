@@ -14,10 +14,10 @@ export default function OnboardingPage() {
   const [i, setI] = useState(0)
 
   const slides = [
-    { icon: 'map', title: t('onb1_title'), desc: t('onb1_desc'), say: t('onb1_say'), bg: '#F9DD4E', mood: 'wave' },
-    { icon: 'logo', title: t('onb2_title'), desc: t('onb2_desc'), say: t('onb2_say'), bg: '#A55EEA', mood: 'idle' },
-    { icon: 'star', title: t('onb3_title'), desc: t('onb3_desc'), say: t('onb3_say'), bg: '#26DE81', mood: 'happy' },
-    { icon: 'logo', title: t('onb4_title'), desc: t('onb4_desc'), say: t('onb4_say'), bg: '#0F0E0E', mood: 'wave' },
+    { icon: 'map', title: t('onb1_title'), desc: t('onb1_desc'), say: t('onb1_say'), bg: '#F9DD4E', mood: 'determined' },
+    { icon: 'logo', title: t('onb2_title'), desc: t('onb2_desc'), say: t('onb2_say'), bg: '#A55EEA', mood: 'party' },
+    { icon: 'star', title: t('onb3_title'), desc: t('onb3_desc'), say: t('onb3_say'), bg: '#26DE81', mood: 'flower' },
+    { icon: 'logo', title: t('onb4_title'), desc: t('onb4_desc'), say: t('onb4_say'), bg: '#0F0E0E', mood: 'excited' },
   ]
 
   // Rukna narrates each slide aloud (when voice guidance is on)

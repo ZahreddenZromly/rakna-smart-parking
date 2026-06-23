@@ -70,7 +70,7 @@ export default function QueuePanel({ lot }) {
     const eta = etaMinutes(pos)
     return (
       <Card>
-        <Row mascot={pos === 0 ? 'idle' : 'worried'}>
+        <Row mascot={pos === 0 ? 'excited' : 'waiting'}>
           <strong style={{ color: C.black }}>{t('queue_in_line')}</strong>
           <p style={{ margin: '4px 0 0', fontSize: '0.84rem', color: C.textMuted }}>{t('queue_hold_tight')}</p>
         </Row>
