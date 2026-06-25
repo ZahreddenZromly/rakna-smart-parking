@@ -29,41 +29,59 @@ const fy = (y) => WORLD_TOP - y
 // Small tidy slots — kept narrow so bays never overlap, even where the real
 // lot packs spots close together (e.g. the taxi ring + its inner island).
 const BAY_W = 2.0   // along the row (CAD units)
-const BAY_D = 3.2   // depth, perpendicular to the row
+const BAY_D = 2.9   // depth, perpendicular to the row
 
-// Each bay's angle follows the LOCAL ROW DIRECTION. We take the nearest
-// neighbour, then the nearest neighbour that sits on the OPPOSITE side of the
-// spot (>120° apart). Those two bracket the spot, so the line through them is
-// the true row tangent — this works for straight rows, ring sides, and the
-// inner island alike, instead of being thrown off by a same-side neighbour.
-// Bay width runs along the tangent, depth perpendicular. Cache by spot id.
-const _angleCache = new Map()
-function rowAngle(spot, peers) {
-  if (_angleCache.has(spot.id)) return _angleCache.get(spot.id)
+// Base bay angle = LOCAL ROW DIRECTION. Take the nearest neighbour, then the
+// nearest one on the OPPOSITE side (>120° apart). Those two bracket the spot,
+// so the line through them is the true row tangent — works for straight rows,
+// ring sides, and inner islands alike. This is then smoothed across each row
+// (see buildAngleMap) so a whole row locks to one clean, parallel direction.
+function baseRowAngle(spot, peers) {
   const others = peers
     .filter((o) => o !== spot)
     .map((o) => ({ dx: o.x - spot.x, dy: o.y - spot.y, d: (o.x - spot.x) ** 2 + (o.y - spot.y) ** 2 }))
     .sort((a, b) => a.d - b.d)
-  let angle = 0
-  if (others.length) {
-    const n1 = others[0]
-    const a1 = Math.atan2(n1.dy, n1.dx)
-    let n2 = null
-    for (const o of others.slice(1)) {
-      let da = Math.abs(Math.atan2(o.dy, o.dx) - a1)
-      if (da > Math.PI) da = 2 * Math.PI - da
-      if (da > 2.094) { n2 = o; break }   // ~120° → opposite side
-    }
-    const tx = n2 ? n1.dx - n2.dx : n1.dx
-    const ty = n2 ? n1.dy - n2.dy : n1.dy
-    angle = Math.atan2(ty, tx)
+  if (!others.length) return 0
+  const n1 = others[0]
+  const a1 = Math.atan2(n1.dy, n1.dx)
+  let n2 = null
+  for (const o of others.slice(1)) {
+    let da = Math.abs(Math.atan2(o.dy, o.dx) - a1)
+    if (da > Math.PI) da = 2 * Math.PI - da
+    if (da > 2.094) { n2 = o; break }   // ~120° → opposite side
   }
-  _angleCache.set(spot.id, angle)
-  return angle
+  const tx = n2 ? n1.dx - n2.dx : n1.dx
+  const ty = n2 ? n1.dy - n2.dy : n1.dy
+  return Math.atan2(ty, tx)
 }
 
-function bayCorners(spot, peers) {
-  const ang = rowAngle(spot, peers)
+// For each zone, compute every bay's angle then smooth it against its nearest
+// neighbours (averaging on the doubled angle so 0°/180° wrap correctly). A few
+// passes make neighbouring bays in a row share one orientation → tidy rows.
+function buildAngleMap(spots) {
+  const n = spots.length
+  let ang = spots.map((s) => baseRowAngle(s, spots))
+  const K = 4
+  const nb = spots.map((s) => spots
+    .map((o, j) => ({ j, d: (o.x - s.x) ** 2 + (o.y - s.y) ** 2 }))
+    .sort((a, b) => a.d - b.d)
+    .slice(1, K + 1)            // skip self (distance 0)
+    .map((e) => e.j))
+  for (let it = 0; it < 3; it++) {
+    const next = ang.slice()
+    for (let i = 0; i < n; i++) {
+      let cx = 2 * Math.cos(2 * ang[i]), sy = 2 * Math.sin(2 * ang[i])  // self weighted
+      for (const j of nb[i]) { cx += Math.cos(2 * ang[j]); sy += Math.sin(2 * ang[j]) }
+      next[i] = 0.5 * Math.atan2(sy, cx)
+    }
+    ang = next
+  }
+  const m = {}
+  spots.forEach((s, i) => { m[s.id] = ang[i] })
+  return m
+}
+
+function bayCorners(spot, ang) {
   const rx = Math.cos(ang), ry = Math.sin(ang)   // row tangent  → bay width
   const nx = -ry, ny = rx                         // perpendicular → bay depth
   const hw = BAY_W / 2, hd = BAY_D / 2
@@ -91,11 +109,13 @@ export default function BlueprintSpotMap({ allSpots, activeZone, selectedSpot, o
   const zoneColor = ZONE_HUE[activeZone] || '#2BCBBA'
   const availCount = activeSpots.filter((s) => s.status === 'available').length
 
-  // group spots by zone so bay angles use only same-zone (same-row) neighbours
-  const peersByZone = useMemo(() => {
-    const m = {}
-    mapped.forEach((s) => { (m[s.zone] ||= []).push(s) })
-    return m
+  // Smoothed bay angle per spot, computed per zone (same-zone = same rows).
+  const angleByZone = useMemo(() => {
+    const byZone = {}
+    mapped.forEach((s) => { (byZone[s.zone] ||= []).push(s) })
+    const out = {}
+    Object.entries(byZone).forEach(([zone, spots]) => { out[zone] = buildAngleMap(spots) })
+    return out
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapped.length])
 
@@ -168,7 +188,7 @@ export default function BlueprintSpotMap({ allSpots, activeZone, selectedSpot, o
         {/* other zones — faint context bays (not selectable) */}
         <g>
           {otherSpots.map((s) => (
-            <polygon key={s.id + '_o'} points={bayCorners(s, peersByZone[s.zone] || otherSpots)}
+            <polygon key={s.id + '_o'} points={bayCorners(s, angleByZone[s.zone]?.[s.id] ?? 0)}
               fill={CTX_FILL} stroke={CTX_LINE} strokeWidth={0.2} />
           ))}
         </g>
@@ -189,7 +209,7 @@ export default function BlueprintSpotMap({ allSpots, activeZone, selectedSpot, o
               fill = 'rgba(148,163,184,0.6)'; stroke = 'rgba(100,116,139,0.8)'; sw = 0.3; clickable = false
             }
             return (
-              <polygon key={s.id} points={bayCorners(s, peersByZone[s.zone] || activeSpots)}
+              <polygon key={s.id} points={bayCorners(s, angleByZone[s.zone]?.[s.id] ?? 0)}
                 fill={fill} fillOpacity={sel ? 1 : 0.92} stroke={stroke} strokeWidth={sw}
                 style={{ cursor: clickable ? 'pointer' : 'default' }}
                 onClick={clickable ? () => onSelect(s) : undefined}>
