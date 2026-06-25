@@ -1,0 +1,89 @@
+export default function Mascot({ size = 120, mood = 'idle', style }) {
+  const happy = mood === 'happy'
+  const sad = mood === 'sad'
+  const worried = mood === 'worried'
+  const waving = mood === 'wave' || happy
+  const thinking = mood === 'thinking'
+  const bodyClass = happy ? 'mascot-happy' : sad ? 'mascot-sad' : worried ? 'mascot-worried' : 'mascot-bob'
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 120 150" style={style} role="img" aria-label="ركنوش" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="rukna-shine" cx="38%" cy="32%" r="70%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.55" />
+          <stop offset="55%" stopColor="#FFFFFF" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      <ellipse cx="60" cy="140" rx="26" ry="6" fill="#0B1A40" opacity="0.14" />
+
+      {!sad && !worried && (
+        <circle className="mascot-glow" cx="60" cy="54" r="46" fill="#3B82F6" opacity="0.25" />
+      )}
+
+      {happy && (
+        <g fill="#1D4ED8">
+          <path className="mascot-spark" d="M16 30 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" style={{ animation: 'mascotTwinkle 1.3s ease-in-out 0s infinite' }} />
+          <path className="mascot-spark" d="M100 22 l1.6 4 4 1.6 -4 1.6 -1.6 4 -1.6 -4 -4 -1.6 4 -1.6 Z" style={{ animation: 'mascotTwinkle 1.3s ease-in-out 0.4s infinite' }} />
+          <path className="mascot-spark" d="M104 58 l1.3 3.2 3.2 1.3 -3.2 1.3 -1.3 3.2 -1.3 -3.2 -3.2 -1.3 3.2 -1.3 Z" style={{ animation: 'mascotTwinkle 1.3s ease-in-out 0.8s infinite' }} />
+        </g>
+      )}
+
+      <g className={bodyClass}>
+        <g className={waving ? 'mascot-hand' : ''}>
+          <line x1="22" y1="74" x2="9" y2="64" stroke="#1D4ED8" strokeWidth="5" strokeLinecap="round" />
+          <circle cx="7" cy="61" r="6" fill="#3B82F6" stroke="#1D4ED8" strokeWidth="2" />
+        </g>
+        <line x1="98" y1="74" x2="109" y2="80" stroke="#1D4ED8" strokeWidth="5" strokeLinecap="round" />
+        <circle cx="111" cy="82" r="5.5" fill="#3B82F6" stroke="#1D4ED8" strokeWidth="2" />
+
+        <path d="M60 132 C 38 100, 20 82, 20 52 A 40 40 0 1 1 100 52 C 100 82 82 100 60 132 Z" fill="#3B82F6" stroke="#1D4ED8" strokeWidth="2.5" />
+        <path d="M60 132 C 38 100, 20 82, 20 52 A 40 40 0 1 1 100 52 C 100 82 82 100 60 132 Z" fill="url(#rukna-shine)" />
+
+        <circle cx="60" cy="16" r="11" fill="#0F224D" />
+        <text x="60" y="21" textAnchor="middle" fontSize="13" fontWeight="800" fill="#3B82F6" fontFamily="Tajawal, system-ui, sans-serif">P</text>
+
+        <circle cx="60" cy="50" r="27" fill="#FFFFFF" />
+
+        <circle className="mascot-eye" cx="50" cy="48" r="4.6" fill="#0F0E0E" />
+        <circle className="mascot-eye" cx="70" cy="48" r="4.6" fill="#0F0E0E" />
+
+        {!sad && !worried && (
+          <>
+            <circle cx="44" cy="58" r="3.5" fill="#3B82F6" opacity="0.5" />
+            <circle cx="76" cy="58" r="3.5" fill="#3B82F6" opacity="0.5" />
+          </>
+        )}
+
+        {(sad || worried) && (
+          <g stroke="#0F0E0E" strokeWidth="2.6" strokeLinecap="round">
+            <line x1="44" y1={sad ? 46 : 45} x2="53" y2="41" />
+            <line x1="76" y1={sad ? 46 : 45} x2="67" y2="41" />
+          </g>
+        )}
+
+        {worried ? (
+          <ellipse cx="60" cy="63" rx="5" ry="4" fill="#0F0E0E" />
+        ) : (
+          <path d={sad ? 'M50 64 Q60 56 70 64' : 'M50 60 Q60 69 70 60'} fill="none" stroke="#0F0E0E" strokeWidth="3" strokeLinecap="round" />
+        )}
+
+        {sad && (
+          <path className="mascot-tear" d="M48 53 q-3.2 5.5 0 8 q3.2 -2.5 0 -8 Z" fill="#4FC3F7" style={{ animation: 'mascotTear 2.4s ease-in-out infinite' }} />
+        )}
+
+        {worried && (
+          <path className="mascot-sweat" d="M83 39 q-3.2 5.5 0 8 q3.2 -2.5 0 -8 Z" fill="#4FC3F7" style={{ animation: 'mascotTear 1.9s ease-in-out infinite' }} />
+        )}
+
+        {thinking && (
+          <g>
+            <circle className="mascot-dot" cx="50" cy="34" r="2.6" fill="#0F0E0E" style={{ animation: 'mascotThink 1.1s ease-in-out 0s infinite' }} />
+            <circle className="mascot-dot" cx="60" cy="34" r="2.6" fill="#0F0E0E" style={{ animation: 'mascotThink 1.1s ease-in-out 0.2s infinite' }} />
+            <circle className="mascot-dot" cx="70" cy="34" r="2.6" fill="#0F0E0E" style={{ animation: 'mascotThink 1.1s ease-in-out 0.4s infinite' }} />
+          </g>
+        )}
+      </g>
+    </svg>
+  )
+}
