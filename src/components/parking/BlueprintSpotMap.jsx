@@ -55,29 +55,81 @@ function baseRowAngle(spot, peers) {
   return Math.atan2(ty, tx)
 }
 
-// For each zone, compute every bay's angle then smooth it against its nearest
-// neighbours (averaging on the doubled angle so 0°/180° wrap correctly). A few
-// passes make neighbouring bays in a row share one orientation → tidy rows.
-function buildAngleMap(spots) {
+// Group a zone's spots into actual parking ROWS by greedy chaining: start at a
+// spot, hop to the nearest neighbour, then keep extending in (roughly) the same
+// direction until the row turns too sharply or the next spot is too far. This
+// separates a ring's perimeter rows from its inner island, so they no longer
+// contaminate each other's orientation.
+const MAX_GAP2 = 49                              // (7 CAD units)² max spacing in a row
+const COS_TOL = Math.cos((48 * Math.PI) / 180)   // keep going while turn < ~48°
+function clusterRows(spots) {
   const n = spots.length
-  let ang = spots.map((s) => baseRowAngle(s, spots))
-  const K = 4
-  const nb = spots.map((s) => spots
-    .map((o, j) => ({ j, d: (o.x - s.x) ** 2 + (o.y - s.y) ** 2 }))
-    .sort((a, b) => a.d - b.d)
-    .slice(1, K + 1)            // skip self (distance 0)
-    .map((e) => e.j))
-  for (let it = 0; it < 3; it++) {
-    const next = ang.slice()
-    for (let i = 0; i < n; i++) {
-      let cx = 2 * Math.cos(2 * ang[i]), sy = 2 * Math.sin(2 * ang[i])  // self weighted
-      for (const j of nb[i]) { cx += Math.cos(2 * ang[j]); sy += Math.sin(2 * ang[j]) }
-      next[i] = 0.5 * Math.atan2(sy, cx)
+  const used = new Array(n).fill(false)
+  const nearestUnused = (i, dx, dy) => {
+    let best = -1, bd = Infinity
+    for (let j = 0; j < n; j++) {
+      if (used[j]) continue
+      const ex = spots[j].x - spots[i].x, ey = spots[j].y - spots[i].y
+      const d = ex * ex + ey * ey
+      if (d === 0 || d > MAX_GAP2) continue
+      if (dx !== undefined) {
+        const L = Math.sqrt(d)
+        if ((ex / L) * dx + (ey / L) * dy < COS_TOL) continue   // wrong direction
+      }
+      if (d < bd) { bd = d; best = j }
     }
-    ang = next
+    return best
   }
+  const rows = []
+  for (let s = 0; s < n; s++) {
+    if (used[s]) continue
+    used[s] = true
+    const row = [s]
+    const seed = nearestUnused(s)
+    if (seed >= 0) {
+      used[seed] = true; row.push(seed)
+      // extend forward
+      for (;;) {
+        const b = row[row.length - 1], a = row[row.length - 2]
+        const dx = spots[b].x - spots[a].x, dy = spots[b].y - spots[a].y
+        const L = Math.hypot(dx, dy) || 1
+        const nx = nearestUnused(b, dx / L, dy / L)
+        if (nx < 0) break
+        used[nx] = true; row.push(nx)
+      }
+      // extend backward from the head
+      for (;;) {
+        const h = row[0], a = row[1]
+        const dx = spots[h].x - spots[a].x, dy = spots[h].y - spots[a].y
+        const L = Math.hypot(dx, dy) || 1
+        const nx = nearestUnused(h, dx / L, dy / L)
+        if (nx < 0) break
+        used[nx] = true; row.unshift(nx)
+      }
+    }
+    rows.push(row)
+  }
+  return rows
+}
+
+// Bay angle = the row's local tangent (central difference along the chain), so
+// every bay lines up with its row — straight rows stay parallel, curved ring
+// sides fan smoothly, and the inner island keeps its own orientation.
+function buildAngleMap(spots) {
+  const rows = clusterRows(spots)
   const m = {}
-  spots.forEach((s, i) => { m[s.id] = ang[i] })
+  rows.forEach((row) => {
+    const k = row.length
+    row.forEach((idx, p) => {
+      const s = spots[idx]
+      if (k === 1) { m[s.id] = baseRowAngle(s, spots); return }
+      let a, b
+      if (p === 0) { a = row[0]; b = row[1] }
+      else if (p === k - 1) { a = row[k - 2]; b = row[k - 1] }
+      else { a = row[p - 1]; b = row[p + 1] }
+      m[s.id] = Math.atan2(spots[b].y - spots[a].y, spots[b].x - spots[a].x)
+    })
+  })
   return m
 }
 
