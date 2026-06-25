@@ -97,6 +97,16 @@ export function SettingsProvider({ children }) {
   // voice guidance — only speaks when the user enabled it
   const speak = useCallback((text) => { if (voice) utter(text) }, [voice, utter])
 
+  // say: speak regardless of the global guidance toggle (used by the AI chat,
+  // which has its own per-chat voice switch)
+  const say = useCallback((text) => utter(text), [utter])
+
+  // stop any in-flight speech (cloud + device)
+  const stopSpeaking = useCallback(() => {
+    stopCloud()
+    if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel()
+  }, [])
+
   // preview a voice from Settings (works even if guidance is off)
   const previewVoice = useCallback((uri) => utter(translations[lang]?.voice_sample || 'Hello, I am Raknoosh.', uri), [utter, lang])
 
@@ -105,7 +115,7 @@ export function SettingsProvider({ children }) {
       theme, setTheme, toggleTheme,
       lang, setLang, t, isRTL: lang === 'ar',
       fontScale, setFontScale,
-      voice, setVoice, speak,
+      voice, setVoice, speak, say, stopSpeaking,
       langVoices, voiceURI, setVoiceURI, previewVoice,
     }}>
       {children}

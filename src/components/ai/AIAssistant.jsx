@@ -14,7 +14,7 @@ const FAB_SIZE = 62
 const SNAP_MARGIN = 16
 
 export default function AIAssistant() {
-  const { t, lang, isRTL } = useSettings()
+  const { t, lang, isRTL, say, stopSpeaking } = useSettings()
   const { user, profile } = useAuth()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
@@ -26,6 +26,10 @@ export default function AIAssistant() {
     return [{ role: 'assistant', content: g.text, actions: g.actions }]
   })
   const scrollRef = useRef(null)
+
+  // The chat reads its replies aloud. On by default; user can mute (remembered).
+  const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem('rakna_ai_voice') !== '0')
+  useEffect(() => { localStorage.setItem('rakna_ai_voice', voiceOn ? '1' : '0') }, [voiceOn])
 
   // FAB drag state
   const [fabPos, setFabPos] = useState({ bottom: 92, right: SNAP_MARGIN })
@@ -79,6 +83,19 @@ export default function AIAssistant() {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, busy, open])
 
+  // greet aloud when the chat opens; stop talking when it closes
+  useEffect(() => {
+    if (open) {
+      if (voiceOn) {
+        const last = messages[messages.length - 1]
+        if (last?.role === 'assistant') say(last.content)
+      }
+    } else {
+      stopSpeaking()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
+
   // let other parts of the app (e.g. the idle helper) open the assistant
   useEffect(() => {
     const openIt = () => setOpen(true)
@@ -107,9 +124,12 @@ export default function AIAssistant() {
       })
       if (!r.ok) throw new Error('api')
       const data = await r.json()
-      setMessages((m) => [...m, { role: 'assistant', content: data.text || local.text, actions: local.actions }])
+      const reply = data.text || local.text
+      setMessages((m) => [...m, { role: 'assistant', content: reply, actions: local.actions }])
+      if (voiceOn) say(reply)
     } catch {
       setMessages((m) => [...m, { role: 'assistant', content: local.text, actions: local.actions }])
+      if (voiceOn) say(local.text)
     }
     setBusy(false)
   }
@@ -189,6 +209,12 @@ export default function AIAssistant() {
                 <div style={{ fontWeight: 700, color: C.black }}>{t('ai_assistant')}</div>
                 <div style={{ fontSize: '0.75rem', color: C.textMuted }}>{t('ai_subtitle')}</div>
               </div>
+              <button
+                onClick={() => setVoiceOn((v) => { if (v) stopSpeaking(); return !v })}
+                title={voiceOn ? t('ai_mute') : t('ai_unmute')}
+                aria-label={voiceOn ? t('ai_mute') : t('ai_unmute')}
+                style={{ width: 34, height: 34, borderRadius: '50%', border: 'none', background: voiceOn ? C.yellowSoft : C.white, cursor: 'pointer', fontSize: '1rem' }}
+              >{voiceOn ? '🔊' : '🔇'}</button>
               <button onClick={() => setOpen(false)} style={{ width: 34, height: 34, borderRadius: '50%', border: 'none', background: C.white, cursor: 'pointer', color: C.textSoft, fontSize: '1rem' }}>✕</button>
             </div>
 

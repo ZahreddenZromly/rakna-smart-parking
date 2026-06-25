@@ -220,6 +220,8 @@ export const translations = {
     ai_placeholder: 'Ask about parking…',
     ai_greeting: "Hi! I'm your Rakna assistant. Ask me where to park, the cheapest spot, or which zone has space.",
     ai_thinking: 'Thinking…',
+    ai_mute: 'Mute voice',
+    ai_unmute: 'Turn on voice',
     // mascot tips
     tip_label: 'Raknoosh says',
     tip_1: 'Tap a green spot on the map to book it instantly.',
@@ -709,6 +711,8 @@ export const translations = {
     ai_placeholder: 'اسأل عن المواقف…',
     ai_greeting: 'مرحباً! أنا مساعد ركنة. اسألني أين تركن، أرخص موقف، أو أي منطقة بها أماكن متاحة.',
     ai_thinking: 'جارٍ التفكير…',
+    ai_mute: 'كتم الصوت',
+    ai_unmute: 'تشغيل الصوت',
     tip_label: 'ركنوش يقول',
     tip_1: 'اضغط على مكان أخضر في الخريطة لحجزه فوراً.',
     tip_2: 'اشحن محفظتك للدفع الأسرع بضغطة واحدة.',
