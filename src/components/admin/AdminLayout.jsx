@@ -6,14 +6,15 @@ import { logoutUser } from '../../firebase/authService'
 import Icon from '../common/Icon'
 
 const TABS = [
-  { to: '/admin', key: 'a_overview', icon: 'settings' },
-  { to: '/admin/users', key: 'a_users', icon: 'user' },
-  { to: '/admin/content', key: 'a_content', icon: 'news' },
-  { to: '/admin/parkings', key: 'a_parkings', icon: 'pin' },
-  { to: '/admin/revenue', key: 'a_revenue', icon: 'wallet' },
-  { to: '/admin/queue', key: 'a_queue', icon: 'clock' },
-  { to: '/admin/partners', key: 'a_partners', icon: 'building' },
-  { to: '/admin/analytics', key: 'a_analytics', icon: 'star' },
+  { to: '/admin',            key: 'a_overview',   icon: 'settings'  },
+  { to: '/admin/users',      key: 'a_users',      icon: 'user'      },
+  { to: '/admin/content',    key: 'a_content',    icon: 'news'      },
+  { to: '/admin/parkings',   key: 'a_parkings',   icon: 'pin'       },
+  { to: '/admin/revenue',    key: 'a_revenue',    icon: 'wallet'    },
+  { to: '/admin/queue',      key: 'a_queue',      icon: 'clock'     },
+  { to: '/admin/partners',   key: 'a_partners',   icon: 'building'  },
+  { to: '/admin/operators',  key: 'a_operators',  icon: 'shield'    },
+  { to: '/admin/analytics',  key: 'a_analytics',  icon: 'star'      },
 ]
 
 export default function AdminLayout({ children }) {

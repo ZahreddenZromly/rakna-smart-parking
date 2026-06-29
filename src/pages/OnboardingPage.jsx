@@ -24,7 +24,7 @@ export default function OnboardingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { speak(slides[i].say) }, [i])
 
-  const finish = () => { markOnboarded(); navigate('/') }
+  const finish = () => { markOnboarded(); navigate('/home') }
   const next = () => (i < slides.length - 1 ? setI(i + 1) : finish())
 
   const s = slides[i]

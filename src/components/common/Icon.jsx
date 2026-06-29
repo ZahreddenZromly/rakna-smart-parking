@@ -35,6 +35,8 @@ const P = {
   chat: <><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.5A8 8 0 1 1 21 12Z" /><path d="M8 11h.01M12 11h.01M16 11h.01" /></>,
   sparkle: <><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" /></>,
   send: <><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z" /></>,
+  mic: <><path d="M12 2a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></>,
+  logout: <><path d="M14 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2" /><path d="M18 12H9M15 9l3 3-3 3" /></>,
 }
 
 export default function Icon({ name, size = 22, color = 'currentColor', strokeWidth = 2, style }) {

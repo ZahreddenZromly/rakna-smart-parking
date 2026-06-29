@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { SettingsProvider, useSettings } from './context/SettingsContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import LandingPage from './pages/LandingPage'
+import HomePage from './pages/HomePage'
 import MapPage from './pages/MapPage'
 import ParkingDetailPage from './pages/ParkingDetailPage'
 import ReservationPage from './pages/ReservationPage'
@@ -31,6 +32,7 @@ import AdminAnalytics from './pages/admin/AdminAnalytics'
 import AdminQueue from './pages/admin/AdminQueue'
 import AdminPartners from './pages/admin/AdminPartners'
 import AdminRevenue from './pages/admin/AdminRevenue'
+import AdminOperators from './pages/admin/AdminOperators'
 import PartnerPage from './pages/PartnerPage'
 import QueueWatcher from './components/queue/QueueWatcher'
 import { C, FONT } from './styles/theme'
@@ -63,6 +65,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Entry />} />
               <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/map" element={<MapPage />} />
               <Route path="/parking/:id" element={<ParkingDetailPage />} />
               <Route path="/parking/:id/spots" element={<SpotSelectorPage />} />
@@ -91,6 +94,7 @@ export default function App() {
               <Route path="/admin/queue" element={<AdminQueue />} />
               <Route path="/admin/revenue" element={<AdminRevenue />} />
               <Route path="/admin/partners" element={<AdminPartners />} />
+              <Route path="/admin/operators" element={<AdminOperators />} />
             </Routes>
           </AccountGate>
           <HelloToast />

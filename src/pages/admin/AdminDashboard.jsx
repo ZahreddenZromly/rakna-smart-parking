@@ -40,6 +40,7 @@ export default function AdminDashboard() {
     { label: t('a_revenue'), icon: 'wallet', to: '/admin/revenue' },
     { label: t('a_queue'), icon: 'clock', to: '/admin/queue' },
     { label: t('a_partners'), icon: 'building', to: '/admin/partners' },
+    { label: t('a_operators'), icon: 'shield', to: '/admin/operators' },
     { label: t('a_analytics'), icon: 'star', to: '/admin/analytics' },
   ]
 

@@ -46,7 +46,13 @@ export default function ConfirmBookingSheet({ spot, lot, onClose, onConfirm }) {
   ]
 
   const confirm = async () => {
-    if (!user) { onClose(); navigate('/login'); return }
+    if (!user) {
+      onClose()
+      // Pass current URL so login can return the user here after signing in
+      const redirect = encodeURIComponent(window.location.pathname + window.location.search)
+      navigate('/phone-login?redirect=' + redirect)
+      return
+    }
     setBusy(true); setErr('')
     try {
       if (method === 'wallet') await payFromWallet(user.uid, total, 'Parking ' + spot.id)

@@ -15,7 +15,7 @@ function pickBest(voices, target, preferredURI) {
   }
   return (
     langVoices.find((v) => /google/i.test(v.name)) ||
-    langVoices.find((v) => /naayf|hoda|salma|zariyah|laila|maged|tarik|microsoft/i.test(v.name)) ||
+    langVoices.find((v) => /iman|omar|naayf|hoda|salma|zariyah|laila|maged|tarik|microsoft/i.test(v.name)) ||
     langVoices.find((v) => v.default) ||
     langVoices[0] ||
     null
@@ -85,7 +85,7 @@ export function SettingsProvider({ children }) {
       synth.cancel()
       const u = new SpeechSynthesisUtterance(text)
       const target = lang === 'ar' ? 'ar' : 'en'
-      u.lang = lang === 'ar' ? 'ar-SA' : 'en-US'
+      u.lang = lang === 'ar' ? 'ar-LY' : 'en-US'
       u.rate = lang === 'ar' ? 0.9 : 0.95 // a touch slower in Arabic for clarity
       u.pitch = 1
       const chosen = pickBest(synth.getVoices(), target, uri ?? voiceURI)

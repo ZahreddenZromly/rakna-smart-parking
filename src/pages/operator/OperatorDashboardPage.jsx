@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts'
-import { useNavigate } from 'react-router-dom'
-import { PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL, getLotName, getLotAddress, getLotShortName } from '../../utils/constants'
+import { PARKING_LOTS, getAvailabilityStatus, STATUS_COLOR, STATUS_LABEL, getLotName, getLotAddress } from '../../utils/constants'
 import { useSettings } from '../../context/SettingsContext'
+import { C, R, SHADOW, FONT } from '../../styles/theme'
+import Icon from '../../components/common/Icon'
 import MascotWelcome from '../../components/common/MascotWelcome'
 
 const hourlyData = [
@@ -16,235 +18,195 @@ const hourlyData = [
 ]
 
 const weekData = [
-  { day: 'Mon', bookings: 42, revenue: 210 },
-  { day: 'Tue', bookings: 55, revenue: 275 },
-  { day: 'Wed', bookings: 61, revenue: 305 },
-  { day: 'Thu', bookings: 58, revenue: 290 },
-  { day: 'Fri', bookings: 80, revenue: 480 },
-  { day: 'Sat', bookings: 75, revenue: 450 },
-  { day: 'Sun', bookings: 38, revenue: 190 },
+  { day: 'Mon', bookings: 42 }, { day: 'Tue', bookings: 55 },
+  { day: 'Wed', bookings: 61 }, { day: 'Thu', bookings: 58 },
+  { day: 'Fri', bookings: 80 }, { day: 'Sat', bookings: 75 },
+  { day: 'Sun', bookings: 38 },
 ]
 
-const monthlyRevenue = [
-  { month: 'Jan', revenue: 3200 }, { month: 'Feb', revenue: 3800 },
-  { month: 'Mar', revenue: 4100 }, { month: 'Apr', revenue: 4600 },
-  { month: 'May', revenue: 5200 }, { month: 'Jun', revenue: 5800 },
-]
-
-const makeLotRevenue = (lang) => PARKING_LOTS.map((lot) => ({
-  name: getLotShortName(lot, lang),
-  revenue: Math.round((lot.totalSpots - lot.availableSpots) * lot.pricePerHour * 6),
-}))
-
-const totalSpots = PARKING_LOTS.reduce((a, b) => a + b.totalSpots, 0)
-const totalAvailable = PARKING_LOTS.reduce((a, b) => a + b.availableSpots, 0)
-const totalOccupied = totalSpots - totalAvailable
-const occupancyPct = Math.round((totalOccupied / totalSpots) * 100)
-const todayRevenue = 450
-const monthRevenue = 5800
-
-const TABS = ['Overview', 'Revenue', 'Lots']
+const TABS = ['Overview', 'Revenue', 'Details']
 
 export default function OperatorDashboardPage() {
   const [tab, setTab] = useState('Overview')
   const navigate = useNavigate()
   const { t: tr, lang } = useSettings()
-  const lotRevenue = makeLotRevenue(lang)
+  const [searchParams] = useSearchParams()
+
+  const lotId = searchParams.get('lot')
+  const email = searchParams.get('email') || ''
+  const lot = PARKING_LOTS.find(l => l.id === lotId) || null
+
+  // If no valid lot, show error
+  if (!lot) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, fontFamily: FONT, background: C.grey, color: C.text }}>
+        <Icon name="shield" size={48} color={C.textMuted} strokeWidth={1.5} />
+        <p style={{ color: C.textMuted }}>Invalid or missing lot access. Please log in again.</p>
+        <button onClick={() => navigate('/operator/login')} style={{ padding: '12px 24px', borderRadius: R.pill, background: 'var(--brand)', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', fontFamily: FONT }}>
+          Back to Login
+        </button>
+      </div>
+    )
+  }
+
+  const occupied = lot.totalSpots - lot.availableSpots
+  const occupancyPct = Math.round((occupied / lot.totalSpots) * 100)
+  const todayRevenue = Math.round(occupied * lot.pricePerHour * 4)
+  const monthRevenue = Math.round(todayRevenue * 22)
+  const status = getAvailabilityStatus(lot.availableSpots, lot.totalSpots)
+  const statusColor = STATUS_COLOR[status]
 
   const statCards = [
-    { label: 'Total Spots', value: totalSpots, color: '#1a1a2e', icon: 'P' },
-    { label: 'Occupied Now', value: totalOccupied, color: '#d63031', icon: 'C' },
-    { label: 'Occupancy Rate', value: occupancyPct + '%', color: '#0984e3', icon: '%' },
-    { label: 'Today Revenue', value: todayRevenue + ' LYD', color: '#00b894', icon: '$' },
-    { label: 'Monthly Revenue', value: monthRevenue + ' LYD', color: '#6c5ce7', icon: 'M' },
-    { label: 'Active Bookings', value: 47, color: '#e17055', icon: 'B' },
+    { label: 'Total Spots', value: lot.totalSpots, color: C.ink },
+    { label: 'Occupied Now', value: occupied, color: '#d63031' },
+    { label: 'Occupancy Rate', value: occupancyPct + '%', color: 'var(--brand)' },
+    { label: 'Today Revenue', value: todayRevenue + ' LYD', color: '#00b894' },
+    { label: 'Monthly Revenue', value: monthRevenue + ' LYD', color: '#6c5ce7' },
+    { label: 'Available', value: lot.availableSpots, color: '#00b894' },
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f2f5', fontFamily: 'Segoe UI, sans-serif' }}>
-      <div style={{ background: '#1a1a2e', padding: '0 2rem', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ color: '#00b894', fontWeight: 700, fontSize: '1.2rem' }}>Operator Dashboard</span>
-        <button onClick={() => navigate('/')} style={{ background: 'transparent', color: '#b2bec3', border: '1px solid #444', padding: '6px 16px', borderRadius: '6px', cursor: 'pointer' }}>
+    <div style={{ minHeight: '100vh', background: C.grey, fontFamily: FONT }}>
+
+      {/* Top bar */}
+      <div style={{
+        background: C.ink, padding: '0 24px', height: 64,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        position: 'sticky', top: 0, zIndex: 30,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 34, height: 34, borderRadius: R.sm, background: 'var(--brand)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="shield" size={18} color="#fff" />
+          </div>
+          <div>
+            <div style={{ color: '#fff', fontWeight: 800, fontSize: '0.95rem', fontFamily: FONT }}>
+              {getLotName(lot, lang)}
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.7rem', fontFamily: FONT }}>{email}</div>
+          </div>
+        </div>
+        <button
+          onClick={() => navigate('/operator/login')}
+          style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)', border: 'none', padding: '7px 16px', borderRadius: R.pill, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, fontFamily: FONT }}
+        >
           Logout
         </button>
       </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1rem' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 20px 40px' }}>
+
+        {/* Lot badge */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          background: C.white, borderRadius: R.card, padding: '14px 18px',
+          boxShadow: SHADOW.soft, marginBottom: 20,
+          borderLeft: `5px solid ${statusColor}`,
+        }}>
+          <Icon name="pin" size={20} color={statusColor} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 800, fontSize: '1.05rem', color: C.black, fontFamily: FONT }}>{getLotName(lot, lang)}</div>
+            <div style={{ color: C.textMuted, fontSize: '0.8rem', fontFamily: FONT }}>{getLotAddress(lot, lang)}</div>
+          </div>
+          <span style={{ background: statusColor + '18', color: statusColor, fontWeight: 700, fontSize: '0.78rem', padding: '5px 12px', borderRadius: 99, fontFamily: FONT }}>
+            {STATUS_LABEL[status]}
+          </span>
+        </div>
 
         <MascotWelcome text={tr('operator_welcome')} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        {/* Stat cards */}
+        <div className="stagger" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, marginBottom: 24 }}>
           {statCards.map((s) => (
-            <div key={s.label} style={{ background: '#fff', borderRadius: '12px', padding: '1.3rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', borderLeft: '5px solid ' + s.color }}>
-              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: s.color }}>{s.value}</div>
-              <div style={{ color: '#636e72', fontSize: '0.85rem', marginTop: '2px' }}>{s.label}</div>
+            <div key={s.label} style={{ background: C.white, borderRadius: R.card, padding: '16px 18px', boxShadow: SHADOW.soft, borderLeft: `4px solid ${s.color}` }}>
+              <div style={{ fontSize: '1.7rem', fontWeight: 800, color: s.color, fontFamily: FONT }}>{s.value}</div>
+              <div style={{ color: C.textMuted, fontSize: '0.82rem', fontFamily: FONT, marginTop: 2 }}>{s.label}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: '4px', marginBottom: '1.5rem', background: '#fff', padding: '4px', borderRadius: '10px', width: 'fit-content', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-          {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)} style={{
-              padding: '8px 22px', border: 'none', borderRadius: '8px', cursor: 'pointer',
-              fontWeight: 600, fontSize: '0.9rem',
-              background: tab === t ? '#1a1a2e' : 'transparent',
-              color: tab === t ? '#fff' : '#636e72',
-            }}>{t}</button>
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 6, marginBottom: 20 }}>
+          {TABS.map((tb) => (
+            <button key={tb} onClick={() => setTab(tb)} style={{
+              padding: '10px 20px', borderRadius: R.pill, border: 'none', cursor: 'pointer',
+              fontWeight: 700, fontSize: '0.86rem', fontFamily: FONT,
+              background: tab === tb ? 'var(--brand)' : C.white,
+              color: tab === tb ? '#fff' : C.textSoft,
+              boxShadow: SHADOW.soft,
+            }}>{tb}</button>
           ))}
         </div>
 
+        {/* Overview tab */}
         {tab === 'Overview' && (
-          <div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-                <h3 style={{ margin: '0 0 1.5rem', color: '#1a1a2e', fontSize: '1rem' }}>Hourly Occupancy (%)</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={hourlyData}>
-                    <CartesianGrid strokeDasharray={'3 3'} stroke="#f0f0f0" />
-                    <XAxis dataKey="hour" tick={{ fontSize: 11 }} />
-                    <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
-                    <Tooltip formatter={(v) => v + '%'} />
-                    <Line type="monotone" dataKey="occupancy" stroke="#00b894" strokeWidth={2} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-                <h3 style={{ margin: '0 0 1.5rem', color: '#1a1a2e', fontSize: '1rem' }}>Weekly Bookings</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={weekData}>
-                    <CartesianGrid strokeDasharray={'3 3'} stroke="#f0f0f0" />
-                    <XAxis dataKey="day" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip />
-                    <Bar dataKey="bookings" fill="#1a1a2e" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-              <h3 style={{ margin: '0 0 1.5rem', color: '#1a1a2e', fontSize: '1rem' }}>Live Status - All Lots</h3>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-                <thead>
-                  <tr style={{ background: '#f8f9fa' }}>
-                    {['Lot Name', 'Available', 'Total', 'Occupancy', 'Status'].map((h) => (
-                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: '#636e72', fontWeight: 600, fontSize: '0.82rem' }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {PARKING_LOTS.map((lot) => {
-                    const status = getAvailabilityStatus(lot.availableSpots, lot.totalSpots)
-                    const color = STATUS_COLOR[status]
-                    const pct = Math.round(((lot.totalSpots - lot.availableSpots) / lot.totalSpots) * 100)
-                    return (
-                      <tr key={lot.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                        <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a2e' }}>{getLotName(lot, lang)}</td>
-                        <td style={{ padding: '12px', color: '#00b894', fontWeight: 600 }}>{lot.availableSpots}</td>
-                        <td style={{ padding: '12px', color: '#636e72' }}>{lot.totalSpots}</td>
-                        <td style={{ padding: '12px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ flex: 1, background: '#f0f0f0', borderRadius: '4px', height: '8px' }}>
-                              <div style={{ width: pct + '%', background: color, borderRadius: '4px', height: '100%' }} />
-                            </div>
-                            <span style={{ fontSize: '0.8rem', color: '#636e72', minWidth: '32px' }}>{pct}%</span>
-                          </div>
-                        </td>
-                        <td style={{ padding: '12px' }}>
-                          <span style={{ background: color + '20', color, padding: '3px 10px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600 }}>
-                            {STATUS_LABEL[status]}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {tab === 'Revenue' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ margin: 0, color: '#1a1a2e', fontSize: '1rem' }}>Monthly Revenue (LYD)</h3>
-                <button style={{ background: '#f0f0f0', border: 'none', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, color: '#636e72' }}>
-                  Export CSV
-                </button>
-              </div>
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={monthlyRevenue}>
-                  <CartesianGrid strokeDasharray={'3 3'} stroke="#f0f0f0" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={(v) => v + ' LYD'} />
-                  <Line type="monotone" dataKey="revenue" stroke="#00b894" strokeWidth={3} dot={{ fill: '#00b894', r: 5 }} />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+            <div style={{ background: C.white, borderRadius: R.card, padding: '20px 20px 14px', boxShadow: SHADOW.soft }}>
+              <h3 style={{ margin: '0 0 16px', color: C.black, fontSize: '0.95rem', fontFamily: FONT, fontWeight: 700 }}>Hourly Occupancy</h3>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={hourlyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="hour" tick={{ fontSize: 10, fontFamily: FONT }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
+                  <Tooltip formatter={(v) => v + '%'} />
+                  <Line type="monotone" dataKey="occupancy" stroke="var(--brand)" strokeWidth={2.5} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
-            <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-              <h3 style={{ margin: '0 0 1.5rem', color: '#1a1a2e', fontSize: '1rem' }}>Revenue by Lot</h3>
+            <div style={{ background: C.white, borderRadius: R.card, padding: '20px 20px 14px', boxShadow: SHADOW.soft }}>
+              <h3 style={{ margin: '0 0 16px', color: C.black, fontSize: '0.95rem', fontFamily: FONT, fontWeight: 700 }}>Weekly Bookings</h3>
               <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={lotRevenue} layout="vertical">
-                  <CartesianGrid strokeDasharray={'3 3'} stroke="#f0f0f0" />
-                  <XAxis type="number" tick={{ fontSize: 11 }} />
-                  <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={130} />
-                  <Tooltip formatter={(v) => v + ' LYD'} />
-                  <Bar dataKey="revenue" fill="#6c5ce7" radius={[0, 4, 4, 0]} />
+                <BarChart data={weekData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="day" tick={{ fontSize: 10, fontFamily: FONT }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip />
+                  <Bar dataKey="bookings" fill="var(--brand)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
-              {[
-                { label: 'Today Revenue', value: todayRevenue + ' LYD', change: '+12% vs yesterday' },
-                { label: 'This Month', value: monthRevenue + ' LYD', change: '+18% vs last month' },
-                { label: 'Peak Hour Bonus', value: '340 LYD', change: '+5% this week' },
-              ].map((s) => (
-                <div key={s.label} style={{ background: '#f8f9fa', borderRadius: '10px', padding: '1.2rem', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#1a1a2e' }}>{s.value}</div>
-                  <div style={{ color: '#636e72', fontSize: '0.82rem', marginTop: '2px' }}>{s.label}</div>
-                  <div style={{ color: '#00b894', fontWeight: 700, fontSize: '0.82rem', marginTop: '4px' }}>{s.change}</div>
-                </div>
-              ))}
             </div>
           </div>
         )}
 
-        {tab === 'Lots' && (
-          <div style={{ background: '#fff', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-            <h3 style={{ margin: '0 0 1.5rem', color: '#1a1a2e', fontSize: '1rem' }}>All Parking Lots</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-              <thead>
-                <tr style={{ background: '#f8f9fa' }}>
-                  {['Lot Name', 'Address', 'Available', 'Total', 'Price/hr', 'Status'].map((h) => (
-                    <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: '#636e72', fontWeight: 600, fontSize: '0.82rem' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {PARKING_LOTS.map((lot) => {
-                  const status = getAvailabilityStatus(lot.availableSpots, lot.totalSpots)
-                  const color = STATUS_COLOR[status]
-                  return (
-                    <tr key={lot.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td style={{ padding: '12px', fontWeight: 600, color: '#1a1a2e' }}>{getLotName(lot, lang)}</td>
-                      <td style={{ padding: '12px', color: '#636e72' }}>{getLotAddress(lot, lang)}</td>
-                      <td style={{ padding: '12px', color: '#00b894', fontWeight: 600 }}>{lot.availableSpots}</td>
-                      <td style={{ padding: '12px', color: '#636e72' }}>{lot.totalSpots}</td>
-                      <td style={{ padding: '12px', color: '#636e72' }}>{lot.pricePerHour} LYD</td>
-                      <td style={{ padding: '12px' }}>
-                        <span style={{ background: color + '20', color, padding: '3px 10px', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 600 }}>
-                          {STATUS_LABEL[status]}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+        {/* Revenue tab */}
+        {tab === 'Revenue' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+            {[
+              { label: 'Today Revenue', value: todayRevenue + ' LYD', change: '+12% vs yesterday', color: '#00b894' },
+              { label: 'This Month', value: monthRevenue + ' LYD', change: '+18% vs last month', color: 'var(--brand)' },
+              { label: 'Price / Hour', value: lot.pricePerHour + ' LYD', change: 'Standard rate', color: '#6c5ce7' },
+              { label: 'Peak Bonus', value: Math.round(lot.pricePerHour * 0.5 * occupied) + ' LYD', change: 'Peak hour multiplier', color: '#e17055' },
+            ].map((s) => (
+              <div key={s.label} style={{ background: C.white, borderRadius: R.card, padding: '20px 18px', boxShadow: SHADOW.soft, borderLeft: `4px solid ${s.color}` }}>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: s.color, fontFamily: FONT }}>{s.value}</div>
+                <div style={{ color: C.text, fontSize: '0.88rem', fontFamily: FONT, fontWeight: 600, marginTop: 4 }}>{s.label}</div>
+                <div style={{ color: '#00b894', fontSize: '0.78rem', fontFamily: FONT, marginTop: 4 }}>{s.change}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Details tab */}
+        {tab === 'Details' && (
+          <div style={{ background: C.white, borderRadius: R.card, padding: 24, boxShadow: SHADOW.soft }}>
+            <h3 style={{ margin: '0 0 18px', color: C.black, fontFamily: FONT, fontWeight: 700 }}>Lot Information</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+              {[
+                { label: 'Name', value: getLotName(lot, lang) },
+                { label: 'Address', value: getLotAddress(lot, lang) },
+                { label: 'Total Capacity', value: lot.totalSpots + ' spots' },
+                { label: 'Available Now', value: lot.availableSpots + ' spots' },
+                { label: 'Price / Hour', value: lot.pricePerHour + ' LYD' },
+                { label: 'Type', value: lot.type },
+                { label: 'Open 24h', value: lot.open24h ? 'Yes' : 'No' },
+                { label: 'Features', value: lot.features?.join(', ') || '—' },
+              ].map((item) => (
+                <div key={item.label} style={{ padding: '12px 16px', background: C.grey, borderRadius: R.sm }}>
+                  <div style={{ fontSize: '0.72rem', color: C.textMuted, fontFamily: FONT, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 4 }}>{item.label}</div>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 700, color: C.text, fontFamily: FONT }}>{item.value}</div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

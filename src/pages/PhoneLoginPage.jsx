@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { C, FONT, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import { phoneSignIn } from '../firebase/authService'
@@ -7,6 +7,8 @@ import Icon from '../components/common/Icon'
 
 export default function PhoneLoginPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/home'
   const { t } = useSettings()
   const [step, setStep] = useState('phone')
   const [phone, setPhone] = useState('')
@@ -35,7 +37,7 @@ export default function PhoneLoginPage() {
     setBusy(true); setErr('')
     try {
       const { isNew } = await phoneSignIn(phone)
-      navigate(isNew ? '/setup-profile' : '/map')
+      navigate(isNew ? '/setup-profile' : redirectTo)
     } catch (e2) {
       setErr('Could not sign in. Try again.'); setBusy(false)
     }

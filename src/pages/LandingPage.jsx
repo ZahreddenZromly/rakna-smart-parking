@@ -39,7 +39,7 @@ export default function LandingPage() {
         </div>
 
         <div style={{ padding: '0 32px 48px', position: 'relative', zIndex: 2 }}>
-          <button onClick={() => navigate('/map')} style={{
+          <button onClick={() => navigate('/home')} style={{
             width: '100%', padding: '18px', borderRadius: R.pill, border: 'none', cursor: 'pointer',
             background: C.yellow, color: C.ink, fontWeight: 700, fontSize: '1.05rem', boxShadow: SHADOW.yellow,
           }}>

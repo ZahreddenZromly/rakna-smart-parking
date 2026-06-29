@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { C, FONT, R, SHADOW } from '../styles/theme'
 import { useSettings } from '../context/SettingsContext'
 import { loginUser } from '../firebase/authService'
@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectTo = searchParams.get('redirect') || '/home'
   const { t } = useSettings()
 
   const submit = async (e) => {
@@ -17,7 +19,7 @@ export default function LoginPage() {
     setErr(''); setBusy(true)
     try {
       await loginUser(form.email, form.password)
-      navigate('/map')
+      navigate(redirectTo)
     } catch {
       setErr('Wrong email or password.')
       setBusy(false)

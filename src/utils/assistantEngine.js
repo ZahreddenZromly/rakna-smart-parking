@@ -9,7 +9,7 @@ const short = (name) => name.replace(' Parking', '').replace(' Lot', '').trim()
 const A = (label, kind, extra = {}) => ({ label, kind, ...extra })
 
 // ---- live context from real app data ----
-export function buildContext(profile, bookings = []) {
+export function buildContext(profile, bookings = [], isAdmin = false) {
   const lots = PARKING_LOTS.map((l) => ({
     id: l.id, name: l.name, address: l.address,
     available: l.availableSpots, total: l.totalSpots, price: l.pricePerHour,
@@ -30,6 +30,7 @@ export function buildContext(profile, bookings = []) {
     walletBalance: profile?.walletBalance || 0,
     vehicles: (profile?.vehicles || []).length,
     activeBookings: bookings.filter((b) => b.status === 'active').length,
+    isAdmin: !!isAdmin,
   }
   return { lots, zones, user }
 }
@@ -57,9 +58,13 @@ export function suggestions(lang) {
 
 export function greeting(ctx, lang) {
   const ar = lang === 'ar'
+  const name = ctx.user?.signedIn && ctx.user?.name ? ctx.user.name : ''
+  const hey = name
+    ? (ar ? `أهلاً ${name}! ` : `Hey ${name}! `)
+    : (ar ? 'مرحباً! ' : 'Hi! ')
   let text = ar
-    ? 'مرحباً! أنا ركنوش، مساعدك الذكي. أقدر ألاقي لك موقف، أعرض نقاطك ومحفظتك، أحجز، أو أنقلك لأي صفحة في التطبيق.'
-    : "Hi! I'm Raknoosh, your smart assistant. I can find you parking, show your points or wallet, join a queue, or take you anywhere in the app."
+    ? `${hey}أنا ركنوش، مساعدك الذكي. أقدر ألاقي لك موقف، أعرض نقاطك ومحفظتك، أحجز، أو أنقلك لأي صفحة في التطبيق.`
+    : `${hey}I'm Raknoosh, your smart assistant. I can find you parking, show your points or wallet, join a queue, or take you anywhere in the app.`
   const actions = []
   const best = bestPick(ctx)
   if (best) {
@@ -80,6 +85,16 @@ export function answer(query, ctx, lang) {
 
   const has = (re) => re.test(q)
   const namedLot = lots.find((l) => q.includes(l.name.toLowerCase()) || q.includes(short(l.name).toLowerCase()))
+
+  // ---- about yourself ----
+  if (has(/who are you|about you|yourself|tell me about|عن نفسك|من أنت|عرّفني|عرفني|نفسك/)) {
+    return {
+      text: ar
+        ? 'أنا ركنوش! رفيقك في البحث عن موقف بطرابلس. اسألني عن أي شيء — أماكن، أسعار، حجوزات، أي شيء تبيه.'
+        : "I'm Raknoosh! Your buddy for finding parking around Tripoli. Ask me anything — spots, prices, bookings, whatever you need.",
+      actions: [],
+    }
+  }
 
   // ---- help / capabilities ----
   if (has(/help|what can you|what do you do|capabilit|مساعدة|ماذا تفعل|كيف تساعد|وش تسوي|شو تعمل/)) {
@@ -200,9 +215,40 @@ export function answer(query, ctx, lang) {
     return { text: ar ? 'عندنا أخبار وعروض محدّثة — خلّيني أوديك للصفحة.' : "We've got fresh news and offers — let me take you there.", actions: [A(ar ? 'الأخبار' : 'News', 'route', { to: '/news' })] }
   }
 
-  // ---- partner / business ----
-  if (has(/partner|business|list.*space|عمل|شراكة|شريك|مساحتي/)) {
-    return { text: ar ? 'لديك مساحة أو موقف؟ تقدر تخليه موقف ذكي معنا وتربح منه.' : 'Have a space or lot? You can turn it into smart parking with us and earn from it.', actions: [A(ar ? 'ركنة للأعمال' : 'Rakna for Business', 'route', { to: '/partner' })] }
+  // ---- how rakna detects spots / IoT / sensors / cameras ----
+  if (has(/sensor|camera|detect|iot|how.*know|how.*find|كاميرا|حساس|استشعار|كيف تعرف|كيف يشتغل|تقنية|أجهزة/)) {
+    if (u.isAdmin) {
+      return {
+        text: ar
+          ? 'كل موقف فيه حساس مدفون في الأرض — إما حساس فوق صوتي أو مغناطيسي. لما تجي سيارة يرسل إشارة للسحابة خلال ثوانٍ عبر بوابة LoRa IoT، وتنعكس على التطبيق مباشرة. كمان عندنا كاميرات AI تقرأ اللوحات وتراقب أكثر من مكان. البطاريات تدوم 5–8 سنوات بدون أسلاك.'
+          : 'Every spot has an in-ground sensor — ultrasonic or magnetic. When a car arrives or leaves it fires through a LoRa IoT gateway to Firebase, and the app updates within seconds. Overhead AI cameras read license plates and cover multiple spots. Sensors are battery-powered for 5–8 years — no wiring per spot.',
+        actions: [],
+      }
+    }
+    return {
+      text: ar
+        ? 'ركنة تستخدم تقنية ذكية في كل موقف تعرف بيها إذا المكان فاضي أو لا — وتحدث التطبيق فوراً. لما تشوف اللون أخضر يعني المكان فعلاً متاح الآن.'
+        : 'Rakna uses smart tech in each spot to know in real time if it\'s free or taken — and updates the app instantly. When you see a green spot, it\'s actually available right now.',
+      actions: [],
+    }
+  }
+
+  // ---- partner / business / investor ----
+  if (has(/partner|business|investor|invest|pitch|revenue|profit|شراكة|شريك|مستثمر|استثمار|أعمال|عمل|أرباح|إيرادات|مساحتي/)) {
+    if (u.isAdmin) {
+      return {
+        text: ar
+          ? 'ركنة أول منصة وقوف ذكي في ليبيا. نركّب الحساسات بدون تكلفة على المالك ونقسم الأرباح. نموذج العمل: عمولة على كل حجز + اشتراك شهري + إعلانات. المالك يكسب أكثر لأن كل مكان فارغ يُحجز مسبقاً. للمستثمر: أول في السوق، إيرادات متكررة، مثل Uber للمواقف.'
+          : "Rakna is Libya's first smart parking platform. We install hardware at zero cost to owners and share booking revenue. Model: commission per booking + monthly SaaS dashboard + advertising. Owners earn 30–50% more through pre-booking. For investors: first mover, asset-light, recurring revenue — like Uber for parking.",
+        actions: [A(ar ? 'ركنة للأعمال' : 'Rakna for Business', 'route', { to: '/partner' })],
+      }
+    }
+    return {
+      text: ar
+        ? 'لديك موقف أو مساحة تريد الاستفادة منها؟ ركنة للأعمال تساعدك تحوّلها لموقف ذكي وتربح منها.'
+        : 'Have a parking space you want to monetise? Rakna for Business can turn it into a smart lot for you.',
+      actions: [A(ar ? 'ركنة للأعمال' : 'Rakna for Business', 'route', { to: '/partner' })],
+    }
   }
 
   // ---- cheapest ----

@@ -15,7 +15,7 @@ const SNAP_MARGIN = 16
 
 export default function AIAssistant() {
   const { t, lang, isRTL, say, stopSpeaking } = useSettings()
-  const { user, profile } = useAuth()
+  const { user, profile, isAdmin } = useAuth()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -30,6 +30,106 @@ export default function AIAssistant() {
   // The chat reads its replies aloud. On by default; user can mute (remembered).
   const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem('rakna_ai_voice') !== '0')
   useEffect(() => { localStorage.setItem('rakna_ai_voice', voiceOn ? '1' : '0') }, [voiceOn])
+
+  // voice input — MediaRecorder + Groq Whisper (works on iOS + all browsers)
+  const [recording, setRecording] = useState(false)
+  const [err, setErr] = useState('')
+  const mediaRef = useRef({ recorder: null, chunks: [] })
+  const autoStopRef = useRef(null)
+
+  const micSupported = typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia
+
+  function getSupportedMime() {
+    if (typeof MediaRecorder === 'undefined') return ''
+    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg']
+    return types.find(t => MediaRecorder.isTypeSupported(t)) || ''
+  }
+
+  async function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result.split(',')[1])
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }
+
+  const stopRecording = () => {
+    clearTimeout(autoStopRef.current)
+    if (mediaRef.current.recorder?.state === 'recording') {
+      mediaRef.current.recorder.stop()
+    }
+  }
+
+  const toggleMic = async () => {
+    if (recording) { stopRecording(); return }
+    setErr('')
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      const mime = getSupportedMime()
+      const recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {})
+      mediaRef.current = { recorder, chunks: [] }
+
+      recorder.ondataavailable = (e) => {
+        if (e.data?.size > 0) mediaRef.current.chunks.push(e.data)
+      }
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop())
+        setRecording(false)
+        const { chunks } = mediaRef.current
+        if (!chunks.length) return
+        const actualMime = recorder.mimeType || mime || 'audio/webm'
+        const blob = new Blob(chunks, { type: actualMime })
+        setBusy(true)
+        try {
+          const base64 = await blobToBase64(blob)
+          const r = await fetch('/api/stt', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ audio: base64, lang, mime: actualMime.split(';')[0] }),
+          })
+          if (r.ok) {
+            const data = await r.json()
+            if (data.text?.trim()) { send(data.text.trim()); return }
+          }
+          if (r.status === 503) {
+            // No Groq key — fall back to Web Speech API on desktop
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+            if (SR) {
+              const rec = new SR()
+              rec.lang = lang === 'ar' ? 'ar' : 'en-US'
+              rec.interimResults = false
+              rec.onresult = (e) => { const tx = (e.results[0][0].transcript || '').trim(); if (tx) send(tx) }
+              rec.onerror = () => setErr(lang === 'ar' ? 'لم يتعرف على الصوت' : 'Could not recognise speech')
+              try { rec.start() } catch { /* ignore */ }
+              setBusy(false)
+              return
+            }
+          }
+          setErr(lang === 'ar' ? 'لم أفهم، جرب مرة ثانية' : 'Could not understand, try again')
+        } catch {
+          setErr(lang === 'ar' ? 'خطأ في التعرف، جرب مرة ثانية' : 'Recognition error, try again')
+        }
+        setBusy(false)
+      }
+
+      recorder.start()
+      setRecording(true)
+      // Auto-stop after 30 seconds
+      autoStopRef.current = setTimeout(stopRecording, 30000)
+    } catch (e) {
+      setRecording(false)
+      if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
+        setErr(lang === 'ar' ? 'الميكروفون محجوب — اسمح للمتصفح باستخدامه من الإعدادات' : 'Mic blocked — allow microphone in browser settings')
+      }
+    }
+  }
+
+  // stop recording if chat closes
+  useEffect(() => {
+    if (!open && recording) stopRecording()
+  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // FAB drag state
   const [fabPos, setFabPos] = useState({ bottom: 92, right: SNAP_MARGIN })
@@ -79,6 +179,16 @@ export default function AIAssistant() {
     getUserReservations(user.uid).then(setBookings).catch(() => {})
   }, [user, open])
 
+  // once profile loads, personalize the greeting with the user's name
+  useEffect(() => {
+    if (!profile) return
+    setMessages((prev) => {
+      if (prev.length !== 1 || prev[0].role !== 'assistant') return prev
+      const g = greeting(buildContext(profile, []), lang)
+      return [{ role: 'assistant', content: g.text, actions: g.actions }]
+    })
+  }, [profile, lang]) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, busy, open])
@@ -114,7 +224,7 @@ export default function AIAssistant() {
     setMessages(next)
     setInput('')
     setBusy(true)
-    const ctx = buildContext(profile, bookings)
+    const ctx = buildContext(profile, bookings, isAdmin)
     const local = answer(text, ctx, lang)
     try {
       const r = await fetch('/api/assistant', {
@@ -254,17 +364,49 @@ export default function AIAssistant() {
               ))}
             </div>
 
+            {/* error banner */}
+            {err && (
+              <div style={{ margin: '0 14px 6px', padding: '8px 12px', borderRadius: R.md, background: '#FFE5E3', color: C.danger, fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>{err}</span>
+                <button onClick={() => setErr('')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.danger, fontWeight: 700, padding: '0 4px' }}>✕</button>
+              </div>
+            )}
+
             {/* input */}
             <div style={{ display: 'flex', gap: 8, padding: 14, borderTop: '1px solid ' + C.greyMid, background: C.grey }}>
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && send()}
-                placeholder={t('ai_placeholder')}
-                style={{ flex: 1, padding: '13px 16px', borderRadius: R.pill, border: '1.5px solid ' + C.greyMid, outline: 'none', fontSize: '0.95rem', background: C.white, color: C.text }}
+                disabled={recording}
+                placeholder={recording ? (lang === 'ar' ? '🔴 جاري التسجيل… اضغط مرة ثانية للإرسال' : '🔴 Recording… tap mic again to send') : t('ai_placeholder')}
+                style={{
+                  flex: 1, padding: '13px 16px', borderRadius: R.pill, outline: 'none', fontSize: '0.95rem',
+                  background: recording ? '#fff0f0' : C.white, color: C.text,
+                  border: '1.5px solid ' + (recording ? '#f87171' : C.greyMid),
+                  transition: 'border-color 0.2s, background 0.2s',
+                }}
               />
-              <button onClick={() => send()} disabled={busy} aria-label="Send" style={{
-                width: 48, height: 48, borderRadius: '50%', border: 'none', cursor: busy ? 'wait' : 'pointer',
+              {micSupported && (
+                <button
+                  onClick={toggleMic}
+                  disabled={busy}
+                  title={recording ? (lang === 'ar' ? 'إيقاف وإرسال' : 'Stop & send') : (lang === 'ar' ? 'تحدث' : 'Speak')}
+                  style={{
+                    width: 48, height: 48, borderRadius: '50%', border: 'none',
+                    cursor: busy ? 'wait' : 'pointer', flexShrink: 0,
+                    background: recording ? '#ef4444' : C.greyMid,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: recording ? '0 0 0 4px rgba(239,68,68,0.25)' : 'none',
+                    animation: recording ? 'glowPulse 1.2s ease-in-out infinite' : 'none',
+                    transition: 'background 0.2s, box-shadow 0.2s',
+                  }}
+                >
+                  <Icon name="mic" size={20} color={recording ? '#fff' : C.ink} />
+                </button>
+              )}
+              <button onClick={() => send()} disabled={busy || recording} aria-label="Send" style={{
+                width: 48, height: 48, borderRadius: '50%', border: 'none', cursor: (busy || recording) ? 'wait' : 'pointer',
                 background: C.yellow, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: SHADOW.yellow,
               }}>
                 <Icon name="send" size={20} color={C.ink} style={{ transform: isRTL ? 'scaleX(-1)' : 'none' }} />

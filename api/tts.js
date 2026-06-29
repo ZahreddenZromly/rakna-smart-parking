@@ -26,8 +26,10 @@ export default async function handler(req, res) {
 
     if (process.env.AZURE_SPEECH_KEY && process.env.AZURE_SPEECH_REGION) {
       const region = process.env.AZURE_SPEECH_REGION
-      const voice = process.env.AZURE_TTS_VOICE || (ar ? 'ar-SA-ZariyahNeural' : 'en-US-JennyNeural')
-      const ssml = `<speak version='1.0' xml:lang='${ar ? 'ar-SA' : 'en-US'}'><voice name='${voice}'><prosody rate='${ar ? '-6%' : '0%'}'>${escapeXml(text)}</prosody></voice></speak>`
+      // ar-LY-OmarNeural = Libyan male, ar-LY-ImanNeural = Libyan female
+      const voice = process.env.AZURE_TTS_VOICE || (ar ? 'ar-LY-OmarNeural' : 'en-US-JennyNeural')
+      const xmlLang = ar ? 'ar-LY' : 'en-US'
+      const ssml = `<speak version='1.0' xml:lang='${xmlLang}'><voice name='${voice}'><prosody rate='${ar ? '-6%' : '0%'}'>${escapeXml(text)}</prosody></voice></speak>`
       const r = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
         method: 'POST',
         headers: {

@@ -4,7 +4,7 @@ import { C, R, SHADOW } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 import Mascot from './Mascot'
 
-const IDLE_MS = 15000 // 15s of no activity → Rukna checks in
+const IDLE_MS = 3 * 60 * 1000 // 3 min of no activity → Rukna checks in
 const ACTIVITY = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'wheel']
 
 // Don't interrupt the user on these surfaces (landing / onboarding / dashboards)

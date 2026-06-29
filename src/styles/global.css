@@ -68,6 +68,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 .tab-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
 @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
@@ -95,6 +96,13 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
   .anim-card, .stagger > *, .blob, .blob-slow { animation: none !important; }
   .press { transition: none; }
   .press:active { transform: none; }
+}
+
+/* ---- focus ring (keyboard nav) ---- */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 /* ---- ركنوش (Raknoosh the Pin) mascot ---- */
@@ -255,4 +263,78 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 /* Top bar gets a bit of breathing room on desktop */
 @media (min-width: 1024px) {
   .rl-topbar { padding-top: 28px !important; padding-bottom: 16px; }
+}
+
+/* ================================================================
+   RESPONSIVE CONTENT UTILITIES
+   ================================================================ */
+
+/* 2-column responsive grid (1 col → 2 col at 640px) */
+.resp-2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px) { .resp-2 { grid-template-columns: 1fr 1fr; } }
+
+/* 3-column responsive grid (1 → 2 → 3) */
+.resp-3 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 640px)  { .resp-3 { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .resp-3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+/* 4-column responsive grid (2 → 4) */
+.resp-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (min-width: 1024px) { .resp-4 { grid-template-columns: repeat(4, 1fr); } }
+
+/* Horizontal split: column on mobile → row on tablet+ */
+.resp-row { display: flex; flex-direction: column; gap: 18px; }
+@media (min-width: 768px) { .resp-row { flex-direction: row; align-items: flex-start; } }
+.resp-row > .resp-main { flex: 1; min-width: 0; }
+.resp-row > .resp-aside { width: 100%; flex-shrink: 0; }
+@media (min-width: 768px) { .resp-row > .resp-aside { width: 320px; } }
+
+/* Show/hide by screen size */
+.hide-desk { } /* visible by default */
+@media (min-width: 768px) { .hide-desk { display: none !important; } }
+.show-desk { display: none !important; }
+@media (min-width: 768px) { .show-desk { display: flex !important; } }
+.show-desk-block { display: none !important; }
+@media (min-width: 768px) { .show-desk-block { display: block !important; } }
+
+/* ----------------------------------------------------------------
+   MAP PAGE LAYOUT
+   Mobile:  col (map on top, panel at bottom)
+   Tablet+: row (panel left 300 px, map fills rest)
+   ---------------------------------------------------------------- */
+.map-outer  { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; isolation: isolate; }
+.map-map    { flex: 1; position: relative; min-height: 0; }
+.map-panel  { background: var(--surface); border-top: 1.5px solid var(--border); flex-shrink: 0; overflow: hidden; }
+.map-chips  { display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px 88px; scrollbar-width: none; }
+.map-chips::-webkit-scrollbar { display: none; }
+.map-chip   { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 999px; border: none; cursor: pointer; white-space: nowrap; flex-shrink: 0; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 0.8rem; transition: background 0.18s, color 0.18s; }
+
+@media (min-width: 768px) {
+  .map-outer  { flex-direction: row; }
+  .map-map    { order: 2; }
+  .map-panel  {
+    order: 1;
+    width: 300px;
+    border-top: none;
+    border-right: 1.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .map-panel::-webkit-scrollbar { display: none; }
+  .map-chips  {
+    flex-direction: column;
+    overflow-x: visible;
+    overflow-y: visible;
+    padding: 8px 12px 16px;
+    flex: 1;
+    gap: 6px;
+  }
+  .map-chip   {
+    width: 100%;
+    border-radius: 12px;
+    justify-content: space-between;
+    padding: 11px 14px;
+  }
 }
