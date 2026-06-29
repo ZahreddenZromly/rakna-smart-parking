@@ -1,45 +1,72 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import { watchAuth, getUserDoc, ensureUserDoc } from '../firebase/authService'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { watchAuth, ensureUserDoc } from '../firebase/authService'
 import { touchLastSeen, saveProfile } from '../firebase/userService'
 import { SUPER_ADMINS } from '../utils/constants'
+import { db } from '../firebase/config'
+import { doc, onSnapshot } from 'firebase/firestore'
 
 const AuthCtx = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)       // firebase auth user
-  const [profile, setProfile] = useState(null) // firestore users/{uid} doc
+  const [user, setUser]       = useState(null)
+  const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const unsubProfile          = useRef(null)
 
-  const refresh = useCallback(async (uid) => {
-    const id = uid || user?.uid
-    if (!id) return
-    const p = await getUserDoc(id)
-    setProfile(p)
-    return p
-  }, [user])
+  // Kept for callers (ProfileSetupPage etc.) — the onSnapshot listener picks up
+  // any Firestore write automatically, so this is just a compatibility shim.
+  const refresh = () => {}
 
   useEffect(() => {
-    return watchAuth(async (fbUser) => {
+    const unsubAuth = watchAuth(async (fbUser) => {
+      // tear down previous user's profile listener
+      unsubProfile.current?.()
+      unsubProfile.current = null
+
       setUser(fbUser)
-      if (fbUser) {
-        try {
-          const p = await ensureUserDoc(fbUser)  // create doc if missing
-          setProfile(p)
-          touchLastSeen(fbUser.uid)  // presence heartbeat
-          // bootstrap: promote owner emails to admin in the DB (best-effort, works once rules allow)
-          const email = (fbUser.email || '').toLowerCase()
-          if (SUPER_ADMINS.includes(email) && p?.role !== 'admin') {
-            saveProfile(fbUser.uid, { role: 'admin' }).then(() => refresh(fbUser.uid)).catch(() => {})
-          }
-        } catch { setProfile(null) }
-      } else {
+
+      if (!fbUser) {
         setProfile(null)
+        setLoading(false)
+        return
       }
-      setLoading(false)
+
+      try {
+        await ensureUserDoc(fbUser)
+        touchLastSeen(fbUser.uid)
+
+        let first = true
+        unsubProfile.current = onSnapshot(
+          doc(db, 'users', fbUser.uid),
+          (snap) => {
+            if (snap.exists()) {
+              const p = { id: snap.id, ...snap.data() }
+              setProfile(p)
+              // Bootstrap SUPER_ADMIN email to admin role (runs once, best-effort)
+              const email = (fbUser.email || '').toLowerCase()
+              if (SUPER_ADMINS.includes(email) && p.role !== 'admin') {
+                saveProfile(fbUser.uid, { role: 'admin' }).catch(() => {})
+              }
+            } else {
+              setProfile(null)
+            }
+            if (first) { first = false; setLoading(false) }
+          },
+          () => { setProfile(null); setLoading(false) },
+        )
+      } catch {
+        setProfile(null)
+        setLoading(false)
+      }
     })
+
+    return () => {
+      unsubAuth()
+      unsubProfile.current?.()
+    }
   }, [])
 
-  const email = (user?.email || '').toLowerCase()
+  const email   = (user?.email || '').toLowerCase()
   const isAdmin = profile?.role === 'admin' || SUPER_ADMINS.includes(email)
 
   return (

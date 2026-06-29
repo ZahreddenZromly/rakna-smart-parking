@@ -78,6 +78,7 @@ export default function App() {
               <Route path="/news" element={<NewsPage />} />
               <Route path="/partner" element={<PartnerPage />} />
               <Route path="/login" element={<Navigate to="/phone-login" replace />} />
+              <Route path="/admin-login" element={<LoginPage />} />
               <Route path="/phone-login" element={<PhoneLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/setup-profile" element={<ProfileSetupPage />} />
