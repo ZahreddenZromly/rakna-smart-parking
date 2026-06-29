@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { SettingsProvider, useSettings } from './context/SettingsContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import LandingPage from './pages/LandingPage'
@@ -77,7 +77,7 @@ export default function App() {
               <Route path="/wallet" element={<WalletPage />} />
               <Route path="/news" element={<NewsPage />} />
               <Route path="/partner" element={<PartnerPage />} />
-              <Route path="/login" element={<LoginPage />} />
+              <Route path="/login" element={<Navigate to="/phone-login" replace />} />
               <Route path="/phone-login" element={<PhoneLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/setup-profile" element={<ProfileSetupPage />} />

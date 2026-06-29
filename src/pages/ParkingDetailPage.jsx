@@ -97,13 +97,6 @@ export default function ParkingDetailPage() {
       }}>
         {t('choose_space')} →
       </button>
-      <button onClick={() => navigate('/parking/' + lot.id + '/map')} style={{
-        marginTop: 12, marginBottom: 24, width: '100%', padding: '15px', borderRadius: R.pill,
-        border: '1.5px solid ' + C.greyMid, background: C.white, color: C.black, fontWeight: 600, fontSize: '0.92rem', cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-      }}>
-        <Icon name="map" size={18} /> {t('view_facility_map')}
-      </button>
     </MobileLayout>
   )
 }
