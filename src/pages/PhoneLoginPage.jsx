@@ -138,7 +138,7 @@ export default function PhoneLoginPage() {
         )}
 
         <p style={{ textAlign: 'center', marginTop: 24, paddingBottom: 32 }}>
-          <Link to="/login" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem', fontFamily: FONT }}>{t('use_email')}</Link>
+          <Link to="/admin-login" style={{ color: C.textMuted, textDecoration: 'none', fontSize: '0.85rem', fontFamily: FONT }}>{t('use_email')}</Link>
         </p>
       </div>
     </div>
