@@ -137,18 +137,12 @@ function Editor({ type, item, onClose, onSave, t }) {
           </>
         )}
 
-        <div style={{ display: 'flex', gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <label style={label}>{t('emoji_label')}</label>
-            <input style={field} value={f.emoji} onChange={(e) => set('emoji', e.target.value)} maxLength={4} />
+        {type === 'ads' && (
+          <div style={{ marginBottom: 12 }}>
+            <label style={label}>Background color (shown when no image)</label>
+            <input type="color" style={{ ...field, padding: 4, height: 46, marginBottom: 0 }} value={f.bg || '#F9DD4E'} onChange={(e) => set('bg', e.target.value)} />
           </div>
-          {type === 'ads' && (
-            <div style={{ flex: 1 }}>
-              <label style={label}>Color</label>
-              <input type="color" style={{ ...field, padding: 4, height: 46 }} value={f.bg} onChange={(e) => set('bg', e.target.value)} />
-            </div>
-          )}
-        </div>
+        )}
 
         <label style={label}>Image</label>
         {f.image && (

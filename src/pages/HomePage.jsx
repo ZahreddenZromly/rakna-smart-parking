@@ -132,22 +132,28 @@ export default function HomePage() {
                 key={ad.id}
                 className="press"
                 style={{
-                  minWidth: 220, flexShrink: 0,
-                  background: ad.bg || 'var(--brand)',
-                  borderRadius: R.card, padding: '18px 16px',
+                  minWidth: 200, flexShrink: 0,
+                  background: ad.image ? C.white : (ad.bg || 'var(--brand)'),
+                  borderRadius: R.card,
                   boxShadow: SHADOW.soft, position: 'relative', overflow: 'hidden',
                 }}
               >
-                <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, borderRadius: '50%', background: 'rgba(0,0,0,0.08)', pointerEvents: 'none' }} />
-                <div style={{ fontSize: '2rem', marginBottom: 8 }}>{ad.emoji || '🎉'}</div>
-                <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1a1a1a', fontFamily: FONT, lineHeight: 1.25 }}>
-                  {ad.title}
-                </div>
-                {ad.subtitle && (
-                  <div style={{ fontSize: '0.75rem', color: 'rgba(0,0,0,0.55)', fontFamily: FONT, marginTop: 4 }}>
-                    {ad.subtitle}
-                  </div>
+                {ad.image ? (
+                  <img src={ad.image} alt={ad.title} style={{ width: '100%', height: 110, objectFit: 'cover', display: 'block' }} />
+                ) : (
+                  <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, borderRadius: '50%', background: 'rgba(0,0,0,0.08)', pointerEvents: 'none' }} />
                 )}
+                <div style={{ padding: '12px 14px' }}>
+                  {!ad.image && <div style={{ fontSize: '2rem', marginBottom: 6 }}>{ad.emoji || '🎉'}</div>}
+                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: ad.image ? C.text : '#1a1a1a', fontFamily: FONT, lineHeight: 1.25 }}>
+                    {ad.title}
+                  </div>
+                  {ad.subtitle && (
+                    <div style={{ fontSize: '0.73rem', color: ad.image ? C.textMuted : 'rgba(0,0,0,0.55)', fontFamily: FONT, marginTop: 3 }}>
+                      {ad.subtitle}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
