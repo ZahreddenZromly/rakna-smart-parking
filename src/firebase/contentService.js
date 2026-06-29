@@ -1,20 +1,8 @@
-import { db, storage } from './config'
+import { db } from './config'
 import {
   collection, getDocs, query, orderBy, doc, setDoc, getDoc, addDoc, deleteDoc,
   serverTimestamp, increment, updateDoc,
 } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { fileToCompressedDataURL } from '../utils/image'
-
-export const uploadContentImage = async (file, folder = 'content') => {
-  const dataUrl = await fileToCompressedDataURL(file, 800, 0.75)
-  const res = await fetch(dataUrl)
-  const blob = await res.blob()
-  const path = `${folder}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
-  const storageRef = ref(storage, path)
-  await uploadBytes(storageRef, blob)
-  return getDownloadURL(storageRef)
-}
 
 // Built-in fallback content shown when the admin hasn't added any yet.
 export const DEFAULT_ADS = [
