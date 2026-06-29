@@ -75,7 +75,7 @@ export default function ParkingDetailPage() {
       {isFull && <QueuePanel lot={lot} />}
 
       {/* Info grid */}
-      <div className="stagger" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 16 }}>
+      <div className="resp-4 stagger" style={{ marginTop: 16 }}>
         {[
           { icon: 'wallet', label: t('price'), value: lot.pricePerHour + ' LYD/hr' },
           { icon: 'building', label: t('type'), value: lot.type },

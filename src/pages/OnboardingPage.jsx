@@ -30,8 +30,8 @@ export default function OnboardingPage() {
   const s = slides[i]
 
   return (
-    <div style={{ minHeight: '100vh', background: C.frame, display: 'flex', justifyContent: 'center', fontFamily: FONT }}>
-      <div style={{ width: '100%', maxWidth: 430, minHeight: '100vh', background: C.white, display: 'flex', flexDirection: 'column', boxShadow: '0 0 60px rgba(0,0,0,0.12)' }}>
+    <div className="auth-wide">
+      <div className="auth-wide-card">
 
         {/* Skip */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '18px 22px' }}>

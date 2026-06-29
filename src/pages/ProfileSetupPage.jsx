@@ -38,8 +38,8 @@ export default function ProfileSetupPage() {
   const primary = { width: '100%', padding: '16px', borderRadius: R.pill, border: 'none', background: C.yellow, color: C.ink, fontWeight: 700, fontSize: '1rem', cursor: 'pointer', boxShadow: SHADOW.yellow }
 
   return (
-    <div style={{ minHeight: '100vh', background: C.frame, display: 'flex', justifyContent: 'center', fontFamily: FONT }}>
-      <div style={{ width: '100%', maxWidth: 430, minHeight: '100vh', background: C.white, padding: '0 28px', boxShadow: '0 0 60px rgba(0,0,0,0.12)' }}>
+    <div className="auth-wide">
+      <div className="auth-wide-card" style={{ padding: '0 28px 28px' }}>
         <div style={{ textAlign: 'center', paddingTop: 48 }}>
           <div style={{ display: 'flex', justifyContent: 'center' }}><Icon name="logo" size={46} color={C.black} strokeWidth={1.8} /></div>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 800, color: C.black, margin: '10px 0 4px' }}>{t('setup_title')}</h1>

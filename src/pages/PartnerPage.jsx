@@ -126,7 +126,7 @@ export default function PartnerPage() {
 
       {/* How you benefit */}
       <Section title={t('ben_title')} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <div className="resp-4" style={{ gap: 10 }}>
         {BENEFITS.map((b) => (
           <div key={b.tk} style={{ background: C.white, borderRadius: R.md, padding: 14, boxShadow: SHADOW.soft }}>
             <div style={{ width: 36, height: 36, borderRadius: '50%', background: C.yellowSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8 }}>
@@ -140,7 +140,7 @@ export default function PartnerPage() {
 
       {/* Who it's for */}
       <Section title={t('partner_who')} />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <div className="resp-4" style={{ gap: 10 }}>
         {SEGMENTS.map((s) => {
           const active = form.businessType === s.key
           return (
@@ -175,7 +175,7 @@ export default function PartnerPage() {
 
       {/* Pricing plans (selectable, drives the estimator) */}
       <Section title={t('partner_plans')} />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="resp-2" style={{ gap: 12 }}>
         {TIERS.map((tr) => {
           const selected = plan === tr.key
           return (
