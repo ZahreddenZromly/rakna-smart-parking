@@ -4,8 +4,8 @@ import { C, R, SHADOW } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 import {
   getAds, getNews, addAd, updateAd, deleteAd, addNews, updateNews, deleteNews,
+  uploadContentImage,
 } from '../../firebase/contentService'
-import { fileToCompressedDataURL, dataUrlKb } from '../../utils/image'
 import Icon from '../../components/common/Icon'
 
 const TABS = ['ads', 'news']
@@ -103,10 +103,9 @@ function Editor({ type, item, onClose, onSave, t }) {
     if (!file) return
     setImgBusy(true)
     try {
-      const dataUrl = await fileToCompressedDataURL(file)
-      if (dataUrlKb(dataUrl) > 900) { alert('Image still too large after compression. Try a smaller one.'); }
-      else set('image', dataUrl)
-    } catch { alert('Could not process image') }
+      const url = await uploadContentImage(file, type)
+      set('image', url)
+    } catch (err) { alert('Upload failed: ' + err.message) }
     setImgBusy(false)
   }
   const field = { width: '100%', padding: '12px 14px', border: '1.5px solid ' + C.greyMid, borderRadius: R.md, fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box', background: C.white, color: C.text, marginBottom: 12 }
@@ -154,10 +153,10 @@ function Editor({ type, item, onClose, onSave, t }) {
           </div>
         )}
         <label style={{ ...field, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, cursor: 'pointer', color: C.textSoft, marginBottom: 6 }}>
-          {imgBusy ? t('saving') : 'Upload image (saved free in database)'}
+          {imgBusy ? 'Uploading…' : 'Upload image'}
           <input type="file" accept="image/*" onChange={pickImage} style={{ display: 'none' }} />
         </label>
-        <input style={field} value={(f.image || '').startsWith('data:') ? '' : (f.image || '')} onChange={(e) => set('image', e.target.value)} placeholder={t('image_url')} />
+        <input style={field} value={f.image || ''} onChange={(e) => set('image', e.target.value)} placeholder={t('image_url')} />
 
         <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
           <button onClick={onClose} style={{ flex: 1, padding: '13px', borderRadius: R.pill, border: '1.5px solid ' + C.greyMid, background: C.white, color: C.black, fontWeight: 600, cursor: 'pointer' }}>{t('cancel')}</button>

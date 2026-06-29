@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 // Config comes from .env (VITE_FIREBASE_*). These web keys are safe to ship in the client;
 // real security is enforced by Firestore rules + Auth settings.
@@ -19,4 +20,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
+export const storage = getStorage(app)
 export default app
