@@ -2,13 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import { C, circleBtn } from '../../styles/theme'
 import { useSettings } from '../../context/SettingsContext'
 
-export default function TopBar({ title, onBack, right }) {
+export default function TopBar({ title, onBack, right, bg = C.grey }) {
   const navigate = useNavigate()
   const { isRTL } = useSettings()
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '20px 0 16px',
+      position: 'sticky', top: 0, zIndex: 40,
+      background: bg,
     }}>
       <button onClick={onBack || (() => navigate(-1))} style={circleBtn} aria-label="Back">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={C.black} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: isRTL ? 'scaleX(-1)' : 'none' }}>

@@ -35,9 +35,9 @@ function NavIcon({ name, active, size = 20 }) {
 // Bottom nav icons (light bg)
 function BottomNavIcon({ name, active }) {
   const brand  = 'var(--brand)'
-  const muted  = C.textMuted
+  const muted  = C.textSoft
   const stroke = active ? brand : muted
-  const c = { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke, strokeWidth: active ? 2.2 : 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', transition: 'stroke 0.2s, stroke-width 0.2s' }
+  const c = { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none', stroke, strokeWidth: active ? 2.4 : 2, strokeLinecap: 'round', strokeLinejoin: 'round', transition: 'stroke 0.2s, stroke-width 0.2s' }
   switch (name) {
     case 'home':   return <svg {...c}><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V21h5v-5h4v5h5V9.5" /></svg>
     case 'map':    return <svg {...c}><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" /><path d="M9 4v14M15 6v14" /></svg>
@@ -159,10 +159,10 @@ export default function MobileLayout({ children, bottomNav = true, bg = C.grey, 
           <div className="rl-bottom-nav" style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             background: C.white,
-            borderTop: `1px solid ${C.greyMid}`,
+            borderTop: `1.5px solid ${C.greyMid}`,
             display: 'flex', justifyContent: 'space-around', alignItems: 'stretch',
-            height: 72,
-            boxShadow: '0 -4px 24px rgba(11,26,64,0.08)',
+            height: 78,
+            boxShadow: '0 -6px 28px rgba(11,26,64,0.14)',
             zIndex: 50,
           }}>
             {NAV.map((n) => {
@@ -174,7 +174,7 @@ export default function MobileLayout({ children, bottomNav = true, bg = C.grey, 
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    gap: 3, flex: 1, padding: '0 4px',
+                    gap: 4, flex: 1, padding: '0 4px', minHeight: 48,
                     position: 'relative', overflow: 'hidden',
                   }}
                 >
@@ -182,14 +182,14 @@ export default function MobileLayout({ children, bottomNav = true, bg = C.grey, 
                   <span style={{
                     position: 'absolute', top: 0, left: '50%',
                     transform: `translateX(-50%) scaleX(${active ? 1 : 0})`,
-                    width: 32, height: 3, borderRadius: '0 0 4px 4px',
+                    width: 36, height: 3.5, borderRadius: '0 0 4px 4px',
                     background: 'var(--brand)',
                     transition: 'transform 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                   }} />
 
                   {/* Icon container */}
                   <div style={{
-                    width: 40, height: 32, borderRadius: 10,
+                    width: 46, height: 36, borderRadius: 12,
                     background: active ? 'var(--brand-soft)' : 'transparent',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     transition: 'background 0.2s',
@@ -198,8 +198,8 @@ export default function MobileLayout({ children, bottomNav = true, bg = C.grey, 
                   </div>
 
                   <span style={{
-                    fontSize: '0.63rem', fontWeight: active ? 700 : 500,
-                    color: active ? 'var(--brand)' : C.textMuted,
+                    fontSize: '0.67rem', fontWeight: active ? 800 : 600,
+                    color: active ? 'var(--brand)' : C.textSoft,
                     transition: 'color 0.2s',
                     letterSpacing: active ? '-0.01em' : 0,
                   }}>

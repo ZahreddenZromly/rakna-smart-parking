@@ -155,13 +155,15 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
    large  ≥ 1440    → wider sidebar + capped content column
    ================================================================ */
 
-/* Outer shell */
+/* Outer shell — locked to exactly one screen so the top bar / bottom nav
+   stay fixed in place; page content scrolls inside .rl-scroll instead. */
 .rl-shell {
-  min-height: 100vh;
+  height: 100dvh;
   display: flex;
   justify-content: center;
   font-family: 'Tajawal', system-ui, sans-serif;
   background: var(--frame);
+  overflow: hidden;
 }
 
 /* Side nav: hidden on phone/tablet */
@@ -171,7 +173,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 .rl-main {
   width: 100%;
   max-width: 430px;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -302,7 +304,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
    Mobile:  col (map on top, panel at bottom)
    Tablet+: row (panel left 300 px, map fills rest)
    ---------------------------------------------------------------- */
-.map-outer  { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; isolation: isolate; }
+.map-outer  { display: flex; flex-direction: column; height: 100%; overflow: hidden; isolation: isolate; }
 .map-map    { flex: 1; position: relative; min-height: 0; }
 .map-panel  { background: var(--surface); border-top: 1.5px solid var(--border); flex-shrink: 0; overflow: hidden; }
 .map-chips  { display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px 88px; scrollbar-width: none; }

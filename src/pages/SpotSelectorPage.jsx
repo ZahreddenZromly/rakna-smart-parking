@@ -54,7 +54,7 @@ export default function SpotSelectorPage() {
   return (
     <MobileLayout bottomNav={false} bg={C.white} pad={false}>
       <div style={{ padding: '0 20px' }}>
-        <TopBar title={getLotShortName(lot, lang)} />
+        <TopBar title={getLotShortName(lot, lang)} bg={C.white} />
       </div>
 
       {/* Zone tabs */}
