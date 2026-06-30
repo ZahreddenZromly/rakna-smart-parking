@@ -79,6 +79,21 @@ function FlyTo({ selected, userPos }) {
   return null
 }
 
+// Leaflet measures its container once on mount — if the flex layout around it
+// hasn't fully settled yet (fonts loading, nested flex reflow), it can measure
+// a stale/zero size. Force a re-measure shortly after mount and on resize.
+function MapReady() {
+  const map = useMap()
+  useEffect(() => {
+    map.invalidateSize()
+    const t = setTimeout(() => map.invalidateSize(), 250)
+    const onResize = () => map.invalidateSize()
+    window.addEventListener('resize', onResize)
+    return () => { clearTimeout(t); window.removeEventListener('resize', onResize) }
+  }, [map])
+  return null
+}
+
 export default function MapPage() {
   const navigate = useNavigate()
   const { t, lang } = useSettings()
@@ -240,6 +255,7 @@ export default function MapPage() {
               maxZoom={20}
             />
             <FlyTo selected={selected} userPos={userPos} />
+            <MapReady />
 
             {PARKING_LOTS.map(lot => {
               const st  = getAvailabilityStatus(lot.availableSpots, lot.totalSpots)
