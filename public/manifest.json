@@ -1,0 +1,16 @@
+{
+  "name": "Rakna — ركنة Smart Parking",
+  "short_name": "Rakna",
+  "description": "Find, reserve and navigate to parking spots around Bourguiba Station in seconds.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B1A40",
+  "theme_color": "#0B1A40",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

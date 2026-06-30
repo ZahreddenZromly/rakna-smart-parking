@@ -158,7 +158,8 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 /* Outer shell — locked to exactly one screen so the top bar / bottom nav
    stay fixed in place; page content scrolls inside .rl-scroll instead. */
 .rl-shell {
-  height: 100dvh;
+  height: 100vh;                        /* fallback */
+  height: calc(var(--vh, 1vh) * 100);   /* JS-corrected — stable across mobile browser chrome resize */
   display: flex;
   justify-content: center;
   font-family: 'Tajawal', system-ui, sans-serif;
@@ -179,6 +180,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
   overflow: hidden;
   box-shadow: 0 0 60px rgba(0,0,0,0.12);
   position: relative;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Scrollable inner */
@@ -192,7 +194,7 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
 .rl-scroll::-webkit-scrollbar { display: none; }
 
 .rl-pad   { padding-left: 20px; padding-right: 20px; }
-.rl-nbpad { padding-bottom: 96px; } /* space for bottom nav */
+.rl-nbpad { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); } /* space for bottom nav */
 
 /* ---- Tablet (640 px+) ---- */
 @media (min-width: 640px) {
