@@ -307,8 +307,8 @@ input, select, textarea { font-family: 'Tajawal', system-ui, sans-serif; }
    Mobile:  col (map on top, panel at bottom)
    Tablet+: row (panel left 300 px, map fills rest)
    ---------------------------------------------------------------- */
-.map-outer  { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; isolation: isolate; }
-.map-map    { flex: 1; position: relative; min-height: 0; }
+.map-outer  { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; isolation: isolate; transform: translateZ(0); }
+.map-map    { flex: 1; position: relative; min-height: 0; transform: translateZ(0); }
 .map-panel  { background: var(--surface); border-top: 1.5px solid var(--border); flex-shrink: 0; overflow: hidden; }
 .map-chips  { display: flex; gap: 8px; overflow-x: auto; padding: 10px 14px 88px; scrollbar-width: none; }
 .map-chips::-webkit-scrollbar { display: none; }

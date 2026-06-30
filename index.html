@@ -22,10 +22,17 @@
       (function () {
         function setVH() {
           document.documentElement.style.setProperty('--vh', window.innerHeight * 0.01 + 'px')
+          // Safari can update the custom property without actually repainting the
+          // nested flex chain that depends on it — force a synchronous reflow so
+          // it doesn't sit stale until the user happens to tap the screen.
+          void document.body.offsetHeight
         }
         setVH()
         window.addEventListener('resize', setVH)
         window.addEventListener('orientationchange', setVH)
+        // First-paint safety net: iOS Safari sometimes settles its real address-bar
+        // state a beat after load, after our layout has already been measured once.
+        setTimeout(setVH, 300)
       })()
     </script>
   </head>
