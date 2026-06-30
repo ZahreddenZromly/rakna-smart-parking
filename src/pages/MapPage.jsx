@@ -150,7 +150,7 @@ export default function MapPage() {
   )
 
   return (
-    <MobileLayout pad={false}>
+    <MobileLayout pad={false} scroll={false}>
       <div className="map-outer">
 
         {/* ── LEFT PANEL (desktop) / BOTTOM PANEL (mobile) ─── */}

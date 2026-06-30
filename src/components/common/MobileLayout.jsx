@@ -89,7 +89,7 @@ function SidebarSection({ label, children }) {
   )
 }
 
-export default function MobileLayout({ children, bottomNav = true, bg = C.grey, pad = true }) {
+export default function MobileLayout({ children, bottomNav = true, bg = C.grey, pad = true, scroll = true }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { t, speak } = useSettings()
@@ -150,7 +150,10 @@ export default function MobileLayout({ children, bottomNav = true, bg = C.grey, 
       {/* ── Content area ────────────────────────────────────────── */}
       <div className="rl-main" style={{ background: bg }}>
 
-        <div className={['rl-scroll', pad ? 'rl-pad' : '', bottomNav ? 'rl-nbpad' : ''].filter(Boolean).join(' ')}>
+        <div
+          className={['rl-scroll', pad ? 'rl-pad' : '', bottomNav ? 'rl-nbpad' : ''].filter(Boolean).join(' ')}
+          style={scroll ? undefined : { overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}
+        >
           {children}
         </div>
 
